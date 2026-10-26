@@ -1,4 +1,4 @@
-# gear_sonic_newton
+# gear_sonic
 
 用于实现 **Isaac Lab 3.0 → Newton → MJWarp** 训练的独立副本。
 
@@ -9,10 +9,10 @@
 最小场景命令（使用 GPU，依赖安装说明见上述记录）：
 
 ```bash
-.env_isaaclab/bin/python -m gear_sonic_newton.scripts.smoke_newton_g1 \
+.env_isaaclab/bin/python -m gear_sonic.scripts.smoke_newton_g1 \
   --num-envs 2 --steps 400 --fixed-base --device cuda:0 \
   --output-dir logs_rl_newton/mjwarp_smoke_fixed
-.env_isaaclab/bin/python -m gear_sonic_newton.scripts.smoke_newton_g1 \
+.env_isaaclab/bin/python -m gear_sonic.scripts.smoke_newton_g1 \
   --num-envs 2 --steps 400 --device cuda:0 \
   --output-dir logs_rl_newton/mjwarp_smoke_floating
 ```
@@ -21,17 +21,17 @@
 
 ```bash
 .env_isaaclab/bin/python -W ignore -m unittest discover \
-  -s gear_sonic_newton/tests -p 'test_lab3_api.py' -v
+  -s gear_sonic/tests -p 'test_lab3_api.py' -v
 ```
 
 测试覆盖旋转与坐标变换、真实 CPU ProxyArray、部分环境的状态写入、G1/H2 配置与四套 Hydra 训练配置。无需启动 Kit 或 GPU。
 
 ## 独立性
 
-- Python 导入、Hydra `_target_` / `func`、脚本调用、包版本引用均使用 `gear_sonic_newton`。
+- Python 导入、Hydra `_target_` / `func`、脚本调用、包版本引用均使用 `gear_sonic`。
 - `data/` 下的代码、机器人模型、资产及人体数据已完整复制；没有指向原包的软链接或硬链接。
-- 两个包分别安装、分别修改。原包的 setuptools 包发现范围已收紧，避免将新包一并打包。
-- 项目根目录下的 `data/` 是显式外部训练数据，使用用户授权的软链接；包内机器人资源仍使用本包，不依赖原 `gear_sonic`。
+- setuptools 包发现范围限定为 `gear_sonic` 及其子包。
+- 项目根目录下的 `data/` 是显式外部训练数据，使用用户授权的软链接；包内机器人资源使用本包的 `gear_sonic/data/`。
 - 旧配置加载前重映射模块和资源路径；评估 loader 同时重映射 pickle 中已知的旧项目模块前缀到本包，避免反序列化时加载原包。未知外部类不在此兼容保证内。
 
 从仓库根目录安装：
@@ -39,7 +39,7 @@
 ```bash
 uv pip install --python .env_isaaclab/bin/python \
   --overrides migration_baselines/step3/isaaclab-overrides.txt \
-  -e 'gear_sonic_newton[evaluation]'
+  -e 'gear_sonic[evaluation]'
 ```
 
 依赖已适配当前 Lab 的 Python 3.12、NumPy 2、Torch 2.11 和 Hydra 1.4；Isaac Lab、Newton 及独立资产导入器需预先准备。当前环境已通过核心 PPO 训练与恢复，`training` extra 中其他可选人体模型工具未全面验收。
@@ -59,11 +59,11 @@ MJWarp 每环境约束容量 `njmax` 默认设为 512，覆盖已观察到的 42
 从仓库根目录使用新入口，完成后端迁移后再进行训练验证：
 
 ```bash
-python gear_sonic_newton/train_agent_trl.py \
+python gear_sonic/train_agent_trl.py \
   +exp=manager/universal_token/all_modes/sonic_release \
   num_envs=16 headless=True
 
-python gear_sonic_newton/eval_agent_trl.py \
+python gear_sonic/eval_agent_trl.py \
   checkpoint=/path/to/checkpoint.pt +headless=True
 ```
 

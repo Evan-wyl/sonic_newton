@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from gear_sonic_newton.trl.utils import common
+from gear_sonic.trl.utils import common
 
 
 def set_fuzzy_config_params(config, candidate_keys, value):

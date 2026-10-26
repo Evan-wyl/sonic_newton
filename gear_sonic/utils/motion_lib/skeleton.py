@@ -9,7 +9,7 @@ import numpy as np
 import scipy.ndimage.filters as filters
 import torch
 
-from gear_sonic_newton.isaac_utils.rotations import (
+from gear_sonic.isaac_utils.rotations import (
     quat_identity_like,
     quat_inverse,
     quat_mul_norm,

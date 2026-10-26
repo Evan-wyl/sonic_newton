@@ -187,7 +187,7 @@ def load_bones_csv(csv_path: str) -> dict:
     )  # cm → m
 
     # Root rotation: Euler xyz (intrinsic) degrees → quaternion (xyzw scipy convention)
-    # Reference: gear_sonic_newton/data_process/process_bones_to_motionlib.py uses "xyz" (intrinsic)
+    # Reference: gear_sonic/data_process/process_bones_to_motionlib.py uses "xyz" (intrinsic)
     euler_deg = np.stack(
         [
             data["root_rotateX"].values,  # noqa: PD011
@@ -337,14 +337,14 @@ def init_humanoid_fk():
     motion_cfg = omegaconf.OmegaConf.create(
         {
             "asset": {
-                "assetRoot": "gear_sonic_newton/data/assets/robot_description/mjcf/",
+                "assetRoot": "gear_sonic/data/assets/robot_description/mjcf/",
                 "assetFileName": "g1_29dof_rev_1_0.xml",
                 "urdfFileName": "",
             },
             "extend_config": [],
         }
     )
-    from gear_sonic_newton.utils.motion_lib import torch_humanoid_batch
+    from gear_sonic.utils.motion_lib import torch_humanoid_batch
 
     return torch_humanoid_batch.Humanoid_Batch(motion_cfg)
 

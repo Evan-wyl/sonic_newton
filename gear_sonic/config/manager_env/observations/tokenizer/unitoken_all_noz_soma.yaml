@@ -20,7 +20,7 @@ defaults:
   - /manager_env/observations/terms/soma_root_ori_b_multi_future@_here_
   - /manager_env/observations/terms/joint_pos_multi_future_wrist_for_soma@_here_
 
-_target_: gear_sonic_newton.envs.manager_env.mdp.observations.TokenizerCfg
+_target_: gear_sonic.envs.manager_env.mdp.observations.TokenizerCfg
 enable_corruption: true
 concatenate_terms: false
 

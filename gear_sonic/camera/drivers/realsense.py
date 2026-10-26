@@ -19,8 +19,8 @@ except ImportError:
 
 import pyrealsense2 as rs
 
-from gear_sonic_newton.camera.sensor import Sensor
-from gear_sonic_newton.camera.sensor_server import (
+from gear_sonic.camera.sensor import Sensor
+from gear_sonic.camera.sensor_server import (
     CameraMountPosition,
     ImageMessageSchema,
     SensorServer,

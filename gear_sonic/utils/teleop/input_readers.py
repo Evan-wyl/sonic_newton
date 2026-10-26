@@ -19,7 +19,7 @@ except ImportError:
     xrt = None
 
 try:
-    from gear_sonic_newton.utils.teleop.isaac_teleop_client import IsaacTeleopClient
+    from gear_sonic.utils.teleop.isaac_teleop_client import IsaacTeleopClient
 except ImportError:
     IsaacTeleopClient = None
 

@@ -15,11 +15,11 @@ from isaaclab.sensors import ContactSensorCfg
 import isaaclab.sim as sim_utils
 from isaaclab.utils import configclass, instantiate
 
-from gear_sonic_newton.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG
-from gear_sonic_newton.envs.newton_config import configure_newton_robot, make_newton_simulation
-from gear_sonic_newton.envs.physics_adapter import get_linear_jacobian, set_world_forces
-from gear_sonic_newton.utils.lab_api import asset_tensor, write_joint_state
-from gear_sonic_newton.utils.lab_math import quat_apply
+from gear_sonic.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG
+from gear_sonic.envs.newton_config import configure_newton_robot, make_newton_simulation
+from gear_sonic.envs.physics_adapter import get_linear_jacobian, set_world_forces
+from gear_sonic.utils.lab_api import asset_tensor, write_joint_state
+from gear_sonic.utils.lab_math import quat_apply
 
 
 def main():
@@ -71,7 +71,7 @@ def main():
                 solver_mu_before = wp.to_torch(solver.mjw_model.geom_friction).clone()
                 q = asset_tensor(robot, "default_joint_pos").clone();v = torch.zeros_like(q)
                 write_joint_state(robot, q, v)
-                from gear_sonic_newton.envs.manager_env.mdp.commands import ForceTrackingCommand, ForceTrackingCommandCfg
+                from gear_sonic.envs.manager_env.mdp.commands import ForceTrackingCommand, ForceTrackingCommandCfg
                 force_cfg = ForceTrackingCommandCfg()
                 joints = list(force_cfg.waist_joints) + list(force_cfg.left_eef_deps) + list(force_cfg.right_eef_deps)
                 bodies = ["left_wrist_yaw_link", "right_wrist_yaw_link"]
@@ -118,7 +118,7 @@ def main():
                 result["compliance_matrix_fd_max_error"] = matrix_error
                 from isaaclab.envs.mdp import randomize_rigid_body_mass, randomize_rigid_body_material
                 selected = torch.tensor([0],device=sim.device)
-                from gear_sonic_newton.envs.manager_env.mdp.events import randomize_joint_default_pos
+                from gear_sonic.envs.manager_env.mdp.events import randomize_joint_default_pos
                 action = SimpleNamespace(_joint_names=robot.joint_names, _offset=q.clone())
                 env.action_manager = SimpleNamespace(get_term=lambda name: action)
                 joint_cfg = SceneEntityCfg("robot", joint_names=["left_elbow_joint"]);joint_cfg.resolve(scene)
@@ -135,7 +135,7 @@ def main():
                 import copy
                 import numpy as np
                 import mujoco
-                from gear_sonic_newton.envs.manager_env.mdp.events import randomize_rigid_body_com
+                from gear_sonic.envs.manager_env.mdp.events import randomize_rigid_body_com
                 com_before = asset_tensor(robot,"body_com_pos_b").clone()
                 mass_com_before = asset_tensor(robot,"body_mass").clone()
                 inertia_com_before = asset_tensor(robot,"body_inertia").clone()

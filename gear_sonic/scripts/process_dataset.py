@@ -12,32 +12,32 @@ The script operates directly on the LeRobot v2.1 on-disk format
 Usage:
 
     # Clean a single dataset in-place
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-path outputs/my_dataset
 
     # Clean and write to a new directory (non-destructive)
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-path outputs/my_dataset \\
         --output-path outputs/my_dataset_cleaned
 
     # Merge multiple datasets into one (validates matching script_config)
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-path outputs/session1 outputs/session2 outputs/session3 \\
         --output-path outputs/merged_dataset
 
     # Merge from a text file listing dataset paths (one per line)
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-list datasets.txt \\
         --output-path outputs/merged_dataset
 
     # Skip SMPL cleaning (merge only)
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-path outputs/session1 outputs/session2 \\
         --output-path outputs/merged \\
         --no-remove-stale-smpl
 
     # Remove discarded episodes (flagged during collection via 'x' key)
-    python gear_sonic_newton/scripts/process_dataset.py \\
+    python gear_sonic/scripts/process_dataset.py \\
         --dataset-path outputs/my_dataset \\
         --output-path outputs/my_dataset_cleaned \\
         --remove-discarded

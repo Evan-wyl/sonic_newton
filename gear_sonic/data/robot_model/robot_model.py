@@ -10,7 +10,7 @@ from typing import List, Optional, Set, Union
 import numpy as np
 import pinocchio as pin
 
-from gear_sonic_newton.data.robot_model.supplemental_info import RobotSupplementalInfo
+from gear_sonic.data.robot_model.supplemental_info import RobotSupplementalInfo
 
 
 class RobotModel:

@@ -38,8 +38,8 @@ import omegaconf
 import wandb
 import yaml
 
-from gear_sonic_newton.trl.callbacks import im_eval_callback
-from gear_sonic_newton.utils import config_utils
+from gear_sonic.trl.callbacks import im_eval_callback
+from gear_sonic.utils import config_utils
 
 config_utils.register_rl_resolvers()
 
@@ -382,7 +382,7 @@ class CheckpointEvaluator:
             eval_callbacks = self.config.get("eval_callbacks", "im_eval")
 
             if mode == "metrics":
-                cmd = f"accelerate launch gear_sonic_newton/eval_agent_trl.py +checkpoint={checkpoint_str} +headless=True ++eval_callbacks={eval_callbacks} ++run_eval_loop=False"  # noqa: E501
+                cmd = f"accelerate launch gear_sonic/eval_agent_trl.py +checkpoint={checkpoint_str} +headless=True ++eval_callbacks={eval_callbacks} ++run_eval_loop=False"  # noqa: E501
                 cmd += f" ++num_envs={self.config.num_eval_envs}"
                 cmd += f" ++eval_output_dir={work_dir}"
                 if eval_mode is not None:
@@ -396,7 +396,7 @@ class CheckpointEvaluator:
                     cmd += f" +log_keys={Path(eval_dataset).name}_{eval_mode if eval_mode is not None else 'all'}"
 
             elif mode == "render":
-                cmd = f"python -u gear_sonic_newton/eval_agent_trl.py +checkpoint={checkpoint_str} +headless=True ++eval_callbacks={eval_callbacks} ++run_eval_loop=False"  # noqa: E501
+                cmd = f"python -u gear_sonic/eval_agent_trl.py +checkpoint={checkpoint_str} +headless=True ++eval_callbacks={eval_callbacks} ++run_eval_loop=False"  # noqa: E501
                 cmd += f" ++num_envs={num_render_videos}"
                 cmd += f" ++metrics_file={metrics_file}"
                 render_sort_by = self.config.get("render_sort_by", None)

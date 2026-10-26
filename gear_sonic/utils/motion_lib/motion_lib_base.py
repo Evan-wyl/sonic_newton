@@ -17,9 +17,9 @@ from scipy.spatial import transform
 import torch
 import torch.multiprocessing as mp
 
-from gear_sonic_newton.isaac_utils import rotations
-from gear_sonic_newton.trl.utils import common
-from gear_sonic_newton.utils.motion_lib import skeleton
+from gear_sonic.isaac_utils import rotations
+from gear_sonic.trl.utils import common
+from gear_sonic.utils.motion_lib import skeleton
 
 
 class FixHeightMode(enum.Enum):
@@ -70,7 +70,7 @@ def interpolate_translation_data(
     Returns:
         Interpolated tensor of shape (num_frames, max_num_objects, D)
     """
-    from gear_sonic_newton.trl.utils import math
+    from gear_sonic.trl.utils import math
 
     data = torch.tensor(data).float() if not torch.is_tensor(data) else data.float()
     N_objects = data.shape[1]
@@ -130,7 +130,7 @@ def interpolate_quaternion_data(
     Returns:
         Interpolated tensor of shape (num_frames, max_num_objects, 4)
     """
-    from gear_sonic_newton.trl.utils import math
+    from gear_sonic.trl.utils import math
 
     data = torch.tensor(data).float() if not torch.is_tensor(data) else data.float()
     N_objects = data.shape[1]

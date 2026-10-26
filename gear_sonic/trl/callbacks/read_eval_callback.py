@@ -4,8 +4,8 @@ from pathlib import Path
 from transformers import TrainerCallback
 import wandb
 
-from gear_sonic_newton.trl.callbacks.im_eval_callback import create_html_table
-from gear_sonic_newton.trl.utils.common import wandb_run_exists
+from gear_sonic.trl.callbacks.im_eval_callback import create_html_table
+from gear_sonic.trl.utils.common import wandb_run_exists
 
 
 class ReadEvalCallback(TrainerCallback):

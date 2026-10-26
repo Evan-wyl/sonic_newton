@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import as_torch, asset_tensor
+from gear_sonic.utils.lab_api import as_torch, asset_tensor
 
 from typing import TYPE_CHECKING
 
-from gear_sonic_newton.utils.lab_math import (
+from gear_sonic.utils.lab_math import (
     matrix_from_quat,
     quat_apply,
     quat_apply_inverse,
@@ -18,9 +18,9 @@ from gear_sonic_newton.utils.lab_math import (
 )
 import torch
 
-from gear_sonic_newton.envs.env_utils import joint_utils
-from gear_sonic_newton.envs.manager_env.mdp import commands, utils
-from gear_sonic_newton.trl.utils import torch_transform
+from gear_sonic.envs.env_utils import joint_utils
+from gear_sonic.envs.manager_env.mdp import commands, utils
+from gear_sonic.trl.utils import torch_transform
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv

@@ -8,7 +8,7 @@ from typing import Any, Dict
 
 import numpy as np
 
-from gear_sonic_newton.data.robot_model.robot_model import RobotModel
+from gear_sonic.data.robot_model.robot_model import RobotModel
 
 
 def concat_action(robot_model: RobotModel, goal: Dict[str, Any]) -> Dict[str, Any]:

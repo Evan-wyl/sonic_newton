@@ -1,5 +1,5 @@
-from gear_sonic_newton.utils.motion_lib.motion_lib_base import MotionLibBase
-from gear_sonic_newton.utils.motion_lib.torch_humanoid_batch import Humanoid_Batch
+from gear_sonic.utils.motion_lib.motion_lib_base import MotionLibBase
+from gear_sonic.utils.motion_lib.torch_humanoid_batch import Humanoid_Batch
 
 
 class MotionLibRobot(MotionLibBase):

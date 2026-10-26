@@ -15,4 +15,4 @@ defaults:
   - /manager_env/rewards/terms/tracking_vr_5point_local@_here_
   - /manager_env/rewards/terms/feet_acc@_here_
 
-_target_: gear_sonic_newton.envs.manager_env.mdp.rewards.RewardsCfg
+_target_: gear_sonic.envs.manager_env.mdp.rewards.RewardsCfg

@@ -5,7 +5,7 @@ from enum import Enum
 
 import numpy as np
 
-from gear_sonic_newton.data.robot_model.supplemental_info.robot_supplemental_info import (
+from gear_sonic.data.robot_model.supplemental_info.robot_supplemental_info import (
     RobotSupplementalInfo,
 )
 

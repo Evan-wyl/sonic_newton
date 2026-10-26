@@ -9,10 +9,10 @@ import torch
 from torch.distributions import Normal
 import torch.nn as nn
 
-from gear_sonic_newton.trl.utils.common import Timer, custom_instantiate
-from gear_sonic_newton.trl.utils.rl import compute_episode_attnmask
-from gear_sonic_newton.utils.batch_normalizer import BatchNormNormalizer
-from gear_sonic_newton.utils.running_mean_std import RunningMeanStd
+from gear_sonic.trl.utils.common import Timer, custom_instantiate
+from gear_sonic.trl.utils.rl import compute_episode_attnmask
+from gear_sonic.utils.batch_normalizer import BatchNormNormalizer
+from gear_sonic.utils.running_mean_std import RunningMeanStd
 
 
 class Actor(nn.Module):

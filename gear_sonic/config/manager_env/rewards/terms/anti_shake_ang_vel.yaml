@@ -1,6 +1,6 @@
 anti_shake_ang_vel:
   _target_: isaaclab.managers.RewardTermCfg
-  func: gear_sonic_newton.envs.manager_env.mdp:anti_shake_ang_vel_l2
+  func: gear_sonic.envs.manager_env.mdp:anti_shake_ang_vel_l2
   weight: -5e-3
   params:
     command_name: "motion"

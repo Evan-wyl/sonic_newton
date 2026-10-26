@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import as_torch, asset_tensor
+from gear_sonic.utils.lab_api import as_torch, asset_tensor
 
 import json
 import os

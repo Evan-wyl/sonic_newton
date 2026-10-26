@@ -15,8 +15,8 @@ Virtual environment setup (run from repo root):
     source .venv_data_collection/bin/activate
 
 Usage (from repo root):
-    python gear_sonic_newton/scripts/run_data_exporter.py --task-prompt "pick up the cup"
-    python gear_sonic_newton/scripts/run_data_exporter.py --task-prompt "walk forward" --dataset-name my_session
+    python gear_sonic/scripts/run_data_exporter.py --task-prompt "pick up the cup"
+    python gear_sonic/scripts/run_data_exporter.py --task-prompt "walk forward" --dataset-name my_session
 """
 
 from collections import deque
@@ -30,21 +30,21 @@ from scipy.spatial.transform import Rotation as R
 import tyro
 import zmq
 
-from gear_sonic_newton.data.exporter import Gr00tDataExporter
-from gear_sonic_newton.data.features_sonic_vla import (
+from gear_sonic.data.exporter import Gr00tDataExporter
+from gear_sonic.data.features_sonic_vla import (
     get_features_sonic_vla,
     get_g1_robot_model,
     get_modality_config_sonic_vla,
     get_wrist_camera_features,
     get_wrist_camera_modality_config,
 )
-from gear_sonic_newton.camera.composed_camera import ComposedCameraClientSensor
-from gear_sonic_newton.utils.data_collection.episode_state import EpisodeState
-from gear_sonic_newton.utils.data_collection.keyboard_subscriber import ZMQKeyboardSubscriber
-from gear_sonic_newton.utils.data_collection.telemetry import Telemetry
-from gear_sonic_newton.utils.data_collection.text_to_speech import TextToSpeech
-from gear_sonic_newton.utils.data_collection.transforms import compute_projected_gravity, quat_to_rot6d
-from gear_sonic_newton.utils.data_collection.zmq_state_subscriber import (
+from gear_sonic.camera.composed_camera import ComposedCameraClientSensor
+from gear_sonic.utils.data_collection.episode_state import EpisodeState
+from gear_sonic.utils.data_collection.keyboard_subscriber import ZMQKeyboardSubscriber
+from gear_sonic.utils.data_collection.telemetry import Telemetry
+from gear_sonic.utils.data_collection.text_to_speech import TextToSpeech
+from gear_sonic.utils.data_collection.transforms import compute_projected_gravity, quat_to_rot6d
+from gear_sonic.utils.data_collection.zmq_state_subscriber import (
     ZMQStateSubscriber,
     poll_robot_config_zmq,
 )

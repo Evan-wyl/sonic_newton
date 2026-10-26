@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import torch
 
-from gear_sonic_newton.envs.manager_env.mdp.events import randomize_joint_default_pos, randomize_rigid_body_com
-from gear_sonic_newton.envs.physics_adapter import get_linear_jacobian
+from gear_sonic.envs.manager_env.mdp.events import randomize_joint_default_pos, randomize_rigid_body_com
+from gear_sonic.envs.physics_adapter import get_linear_jacobian
 
 
 class NewtonFeatureTests(unittest.TestCase):
@@ -41,7 +41,7 @@ class NewtonFeatureTests(unittest.TestCase):
         cfg = SimpleNamespace(name="robot", body_ids=[3,1])
         def write(env, asset, positions, *, body_ids, env_ids):
             asset.data.body_com_pos_b[env_ids[:,None],body_ids] = positions
-        with patch("gear_sonic_newton.envs.physics_adapter.set_body_com_startup", side_effect=write):
+        with patch("gear_sonic.envs.physics_adapter.set_body_com_startup", side_effect=write):
             for _ in range(2):
                 randomize_rigid_body_com(env, torch.tensor([1]), {"x":(.02,.02),"z":(-.03,-.03)}, cfg)
         expected = original.clone()

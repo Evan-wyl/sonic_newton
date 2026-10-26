@@ -17,13 +17,13 @@ import numpy as np
 from omegaconf import OmegaConf
 import torch
 
-from gear_sonic_newton.envs.newton_config import newton_launcher_args
-from gear_sonic_newton.train_agent_trl import create_manager_env
-from gear_sonic_newton.utils.config_utils import register_rl_resolvers
-from gear_sonic_newton.utils.lab_api import asset_tensor
-from gear_sonic_newton.trl.utils.common import custom_instantiate
-from gear_sonic_newton.utils.obs_utils import get_group_term_obs_shape
-from gear_sonic_newton.utils.checkpoint_io import load_checkpoint, load_policy_weights
+from gear_sonic.envs.newton_config import newton_launcher_args
+from gear_sonic.train_agent_trl import create_manager_env
+from gear_sonic.utils.config_utils import register_rl_resolvers
+from gear_sonic.utils.lab_api import asset_tensor
+from gear_sonic.trl.utils.common import custom_instantiate
+from gear_sonic.utils.obs_utils import get_group_term_obs_shape
+from gear_sonic.utils.checkpoint_io import load_checkpoint, load_policy_weights
 
 
 def build_policy(config, env, checkpoint=None):
@@ -50,7 +50,7 @@ def build_policy(config, env, checkpoint=None):
     if checkpoint:
         # Register the existing TRL compatibility aliases before unpickling
         # training-state metadata; evaluation itself does not create a trainer.
-        from gear_sonic_newton.trl.trainer import ppo_trainer  # noqa: F401
+        from gear_sonic.trl.trainer import ppo_trainer  # noqa: F401
         saved = load_checkpoint(checkpoint, map_location=env.device)
         load_policy_weights(policy, saved)
     for parameter in policy.parameters():
@@ -60,11 +60,11 @@ def build_policy(config, env, checkpoint=None):
 
 def synthetic_reference(config, output):
     """Create a static robot reference; SMPL zeros are explicitly diagnostic."""
-    from gear_sonic_newton.envs.manager_env.robots.g1 import (
+    from gear_sonic.envs.manager_env.robots.g1 import (
         G1_CYLINDER_MODEL_12_DEX_CFG, G1_ISAACLAB_TO_MUJOCO_DOF, G1_MUJOCO_TO_ISAACLAB_DOF,
     )
-    from gear_sonic_newton.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
-    from gear_sonic_newton.utils.motion_lib.torch_humanoid_batch import Humanoid_Batch
+    from gear_sonic.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
+    from gear_sonic.utils.motion_lib.torch_humanoid_batch import Humanoid_Batch
     batch = Humanoid_Batch(EasyDict(OmegaConf.to_container(config.manager_env.commands.motion.motion_lib_cfg)))
     defaults = torch.zeros(29)
     import re
@@ -132,13 +132,13 @@ def main():
             parser.error("Checkpoint and its saved configuration must both exist.")
         raw = config_path.read_text()
         for old, new in [
-            ("groot.rl.trl.", "gear_sonic_newton.trl."),
-            ("groot.rl.envs.", "gear_sonic_newton.envs."),
-            ("groot.rl.utils.", "gear_sonic_newton.utils."),
-            ("groot.rl.agents.modules.modules.", "gear_sonic_newton.trl.modules.base_module."),
-            ("groot.rl.agents.", "gear_sonic_newton.trl."),
-            ("groot/rl/data/", "gear_sonic_newton/data/"),
-            ("gear_sonic.", "gear_sonic_newton."), ("gear_sonic/", "gear_sonic_newton/"),
+            ("groot.rl.trl.", "gear_sonic.trl."),
+            ("groot.rl.envs.", "gear_sonic.envs."),
+            ("groot.rl.utils.", "gear_sonic.utils."),
+            ("groot.rl.agents.modules.modules.", "gear_sonic.trl.modules.base_module."),
+            ("groot.rl.agents.", "gear_sonic.trl."),
+            ("groot/rl/data/", "gear_sonic/data/"),
+            ("gear_sonic.", "gear_sonic."), ("gear_sonic/", "gear_sonic/"),
             ("assets/bm/unitree_description/", "assets/robot_description/"),
             ("isaaclab.utils.noise.AdditiveUniformNoiseCfg", "isaaclab.utils.noise.UniformNoiseCfg"),
         ]:
@@ -178,7 +178,7 @@ def main():
     for key in disabled_events:
         config.manager_env.events[key] = None
     config.manager_env.recorders = {
-        "_target_": "gear_sonic_newton.utils.tracking_metrics.TrackingEvalRecordersCfg",
+        "_target_": "gear_sonic.utils.tracking_metrics.TrackingEvalRecordersCfg",
     }
     OmegaConf.save(config, output / "config.yaml")
     result = {
@@ -212,7 +212,7 @@ def main():
         result["articulation_type"] = f"{type(env.env.scene['robot']).__module__}.{type(env.env.scene['robot']).__name__}"
         robot = env.env.scene["robot"]
         result["joint_names"] = robot.joint_names
-        from gear_sonic_newton.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
+        from gear_sonic.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
         assert robot.joint_names == G1_ISAACLab_ORDER
         action_term = env.env.action_manager.get_term("joint_pos")
         probe = torch.zeros((args.num_envs, robot.num_joints), device=args.device)

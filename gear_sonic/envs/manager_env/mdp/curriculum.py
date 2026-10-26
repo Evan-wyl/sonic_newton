@@ -11,7 +11,7 @@ The functions can be passed to the :class:`isaaclab.managers.CurriculumTermCfg` 
 the curriculum introduced by the function.
 """
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 from collections.abc import Sequence
 from typing import TYPE_CHECKING

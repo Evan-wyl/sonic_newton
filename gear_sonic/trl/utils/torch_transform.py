@@ -595,7 +595,7 @@ human_joints_info = None
 def compute_human_joints(
     body_pose,
     global_orient,
-    human_joints_info_path="gear_sonic_newton/data/human/human_joints_info.pkl",
+    human_joints_info_path="gear_sonic/data/human/human_joints_info.pkl",
     use_thumb_joints=True,
 ):
     """

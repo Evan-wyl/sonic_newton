@@ -10,13 +10,13 @@ GEM-X estimates SOMA (77-joint) body params. SONIC's deployed policy has an
 
 This module converts a per-frame SOMA decode into the v3 stream fields, matching
 SONIC's own convention in
-``gear_sonic_newton/scripts/pico_manager_thread_server.py:process_smpl_joints`` exactly:
+``gear_sonic/scripts/pico_manager_thread_server.py:process_smpl_joints`` exactly:
 the root quaternion goes aa -> quat -> smpl_root_ytoz_up (+90 deg about X) ->
 remove_smpl_base_rot; smpl_joints are the SMPL joints with that root orientation
 removed (root-local), in Z-up. Optional temporal smoothing steadies the live
 signal.
 
-Note: this file imports ``gear_sonic_newton`` (native when run from inside the SONIC
+Note: this file imports ``gear_sonic`` (native when run from inside the SONIC
 repo). The SOMA body-model layer is passed in by the caller, so GEM-X is not
 imported here directly.
 """
@@ -138,14 +138,14 @@ class SomaToSmpl:
         self.smpl_idx = build_soma_to_smpl_index(names)
         self._R_up = _YUP_TO_ZUP.to(device)
 
-        # Deferred: sonic_root must be on sys.path before gear_sonic_newton resolves.
+        # Deferred: sonic_root must be on sys.path before gear_sonic resolves.
         if sonic_root and sonic_root not in sys.path:
             sys.path.insert(0, sonic_root)
-        from gear_sonic_newton.isaac_utils.rotations import (
+        from gear_sonic.isaac_utils.rotations import (
             remove_smpl_base_rot,
             smpl_root_ytoz_up,
         )
-        from gear_sonic_newton.trl.utils.torch_transform import (
+        from gear_sonic.trl.utils.torch_transform import (
             angle_axis_to_quaternion,
             quat_apply,
             quat_inv,
@@ -245,7 +245,7 @@ class SomaToSmpl:
         }
 
 
-HEADER_SIZE = 1280  # SONIC ZMQ header size (see gear_sonic_newton zmq_planner_sender.py)
+HEADER_SIZE = 1280  # SONIC ZMQ header size (see gear_sonic zmq_planner_sender.py)
 
 
 def _fallback_pack_pose_message(pose_data: dict, topic: str = "pose", version: int = 3) -> bytes:
@@ -287,12 +287,12 @@ def _get_packer(sonic_root: str | None = None):
     if sonic_root and sonic_root not in sys.path:
         sys.path.insert(0, sonic_root)
     try:
-        from gear_sonic_newton.utils.teleop.zmq.zmq_planner_sender import pack_pose_message
+        from gear_sonic.utils.teleop.zmq.zmq_planner_sender import pack_pose_message
 
         print("[bridge] Using SONIC's pack_pose_message (exact wire format).")
         return pack_pose_message
     except Exception as exc:
-        print(f"[bridge] gear_sonic_newton not importable ({exc}); using built-in fallback packer.")
+        print(f"[bridge] gear_sonic not importable ({exc}); using built-in fallback packer.")
         return _fallback_pack_pose_message
 
 

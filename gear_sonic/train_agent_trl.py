@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Fix sys.path: when running as `python gear_sonic_newton/train_agent_trl.py`, Python adds
-# gear_sonic_newton/ to sys.path[0], causing `from trl import ...` to resolve to our local
-# gear_sonic_newton/trl/ instead of the HuggingFace trl package. Replace with repo root.
+# Fix sys.path: when running as `python gear_sonic/train_agent_trl.py`, Python adds
+# gear_sonic/ to sys.path[0], causing `from trl import ...` to resolve to our local
+# gear_sonic/trl/ instead of the HuggingFace trl package. Replace with repo root.
 import sys
 import os
 _script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,15 +56,15 @@ from omegaconf import DictConfig, OmegaConf
 import wandb
 import yaml
 
-from gear_sonic_newton.trl.utils.common import (
+from gear_sonic.trl.utils.common import (
     custom_instantiate,
     get_filtered_state_dict,
     materialize_lazy_params,
     wandb_run_exists,
 )
-from gear_sonic_newton.utils.common import seeding
-from gear_sonic_newton.utils.config_utils import register_rl_resolvers
-from gear_sonic_newton.utils.obs_utils import get_group_term_obs_shape
+from gear_sonic.utils.common import seeding
+from gear_sonic.utils.config_utils import register_rl_resolvers
+from gear_sonic.utils.obs_utils import get_group_term_obs_shape
 
 register_rl_resolvers()
 
@@ -101,9 +101,9 @@ def create_manager_env(config, device, args_cli):
         ManagerBasedRLEnv,
     )
 
-    from gear_sonic_newton.envs.wrapper.manager_env_wrapper import ManagerEnvWrapper
+    from gear_sonic.envs.wrapper.manager_env_wrapper import ManagerEnvWrapper
 
-    from gear_sonic_newton.utils.config_utils import resolve_motion_paths
+    from gear_sonic.utils.config_utils import resolve_motion_paths
     env_instance_cfg = custom_instantiate(resolve_motion_paths(config.manager_env))
 
     # Iteratively check the difference in attribute of env_instance_cfg1 and env_instance_cfg, print out the difference
@@ -229,7 +229,7 @@ def main(config: OmegaConf):
 
     # Setup simulator similar to train_agent.py
 
-    from gear_sonic_newton.envs.newton_config import newton_launcher_args
+    from gear_sonic.envs.newton_config import newton_launcher_args
     args_cli = newton_launcher_args(config, device)
 
     torch.backends.cuda.matmul.allow_tf32 = True
@@ -237,7 +237,7 @@ def main(config: OmegaConf):
     torch.backends.cudnn.deterministic = False
     torch.backends.cudnn.benchmark = False
 
-    from gear_sonic_newton.utils.logging import HydraLoggerBridge
+    from gear_sonic.utils.logging import HydraLoggerBridge
 
     # resolve=False is important otherwise overrides
     # at inference time won't work properly

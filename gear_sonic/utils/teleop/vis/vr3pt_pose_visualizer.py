@@ -75,7 +75,7 @@ G1_RIGHT_WRIST_FRAME = "right_wrist_yaw_link"
 G1_TORSO_FRAME = "torso_link"
 
 # Key frame offsets applied in the local frame of each link
-# (from gear_sonic_newton/config/manager_env/commands/terms/force.yaml)
+# (from gear_sonic/config/manager_env/commands/terms/force.yaml)
 G1_KEY_FRAME_OFFSETS = {
     "left_wrist": np.array([0.18, -0.025, 0.0]),
     "right_wrist": np.array([0.18, 0.025, 0.0]),
@@ -207,7 +207,7 @@ class G1RobotVisualizer:
             raise ImportError("Pinocchio is required. Install with: pip install pin")
 
         # Import here to avoid circular imports and make the dependency optional
-        from gear_sonic_newton.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
+        from gear_sonic.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
 
         self.robot_model = robot_model if robot_model is not None else instantiate_g1_robot_model()
 

@@ -2,8 +2,8 @@
 
 import torch
 
-from gear_sonic_newton.utils.lab_api import as_torch, asset_tensor
-from gear_sonic_newton.utils.lab_math import quat_apply
+from gear_sonic.utils.lab_api import as_torch, asset_tensor
+from gear_sonic.utils.lab_math import quat_apply
 
 
 def get_linear_jacobian(asset, body_name, joint_names, point_offset=None):

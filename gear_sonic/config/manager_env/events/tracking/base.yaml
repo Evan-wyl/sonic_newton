@@ -7,4 +7,4 @@ defaults:
   - /manager_env/events/terms/base_com@_here_
   - /manager_env/events/terms/push_robot@_here_
 
-_target_: gear_sonic_newton.envs.manager_env.mdp.events.EventCfg
+_target_: gear_sonic.envs.manager_env.mdp.events.EventCfg

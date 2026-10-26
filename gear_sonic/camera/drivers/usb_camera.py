@@ -15,8 +15,8 @@ try:
 except ImportError:
     gym = None  # type: ignore[assignment]
 
-from gear_sonic_newton.camera.sensor import Sensor
-from gear_sonic_newton.camera.sensor_server import CameraMountPosition
+from gear_sonic.camera.sensor import Sensor
+from gear_sonic.camera.sensor_server import CameraMountPosition
 
 
 class USBCameraConfig:
@@ -76,7 +76,7 @@ class USBCameraSensor(Sensor):
         }
 
     def serialize(self, data: dict[str, Any]) -> dict[str, Any]:
-        from gear_sonic_newton.camera.sensor_server import ImageMessageSchema
+        from gear_sonic.camera.sensor_server import ImageMessageSchema
 
         serialized_msg = ImageMessageSchema(timestamps=data["timestamps"], images=data["images"])
         return serialized_msg.serialize()

@@ -1,12 +1,12 @@
 motion:
-  _target_: gear_sonic_newton.envs.manager_env.mdp.commands.TrackingCommandCfg
+  _target_: gear_sonic.envs.manager_env.mdp.commands.TrackingCommandCfg
   asset_name: "robot"
 
   motion_lib_cfg:
     motion_file: ${robot.motion.motion_file}
     smpl_motion_file:
     asset:
-      assetRoot: "gear_sonic_newton/data/assets/robot_description/mjcf/"
+      assetRoot: "gear_sonic/data/assets/robot_description/mjcf/"
       assetFileName: "g1_29dof_rev_1_0.xml"
       urdfFileName: ""
     extend_config: []

@@ -9,12 +9,12 @@ import torch
 class Unpickler(pickle.Unpickler):
     def find_class(self, module, name):
         for old, new in (
-            ("gear_sonic", "gear_sonic_newton"),
-            ("groot.rl.agents.modules.modules", "gear_sonic_newton.trl.modules.base_module"),
-            ("groot.rl.agents", "gear_sonic_newton.trl"),
-            ("groot.rl.trl", "gear_sonic_newton.trl"),
-            ("groot.rl.envs", "gear_sonic_newton.envs"),
-            ("groot.rl.utils", "gear_sonic_newton.utils"),
+            ("gear_sonic_newton", "gear_sonic"),
+            ("groot.rl.agents.modules.modules", "gear_sonic.trl.modules.base_module"),
+            ("groot.rl.agents", "gear_sonic.trl"),
+            ("groot.rl.trl", "gear_sonic.trl"),
+            ("groot.rl.envs", "gear_sonic.envs"),
+            ("groot.rl.utils", "gear_sonic.utils"),
         ):
             if module == old or module.startswith(old + "."):
                 module = new + module[len(old):]

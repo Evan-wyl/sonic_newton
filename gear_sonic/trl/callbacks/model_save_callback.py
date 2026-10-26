@@ -10,7 +10,7 @@ import torch
 from transformers import TrainerCallback
 import wandb
 
-from gear_sonic_newton.trl.utils.common import wandb_run_exists
+from gear_sonic.trl.utils.common import wandb_run_exists
 
 
 class ModelSaveCallback(TrainerCallback):
@@ -101,7 +101,7 @@ class ModelSaveCallback(TrainerCallback):
         checkpoint_path = os.path.join(env.config.experiment_dir, "last.pt")
         cmd = [
             sys.executable,
-            "gear_sonic_newton/eval_agent_trl.py",
+            "gear_sonic/eval_agent_trl.py",
             f"+checkpoint={checkpoint_path}",
             "+num_envs=1",
             "+headless=true",

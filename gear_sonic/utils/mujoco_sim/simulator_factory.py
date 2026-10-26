@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 
-from gear_sonic_newton.utils.mujoco_sim.base_sim import BaseSimulator
+from gear_sonic.utils.mujoco_sim.base_sim import BaseSimulator
 
 
 def init_channel(config: Dict[str, Any]) -> None:

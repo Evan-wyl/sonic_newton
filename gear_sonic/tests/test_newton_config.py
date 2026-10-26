@@ -7,8 +7,8 @@ import unittest
 from isaaclab_newton.physics import MJWarpSolverCfg, NewtonCfg
 from isaaclab_newton.sim.schemas import NewtonArticulationCfg
 
-from gear_sonic_newton.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG
-from gear_sonic_newton.envs.newton_config import (
+from gear_sonic.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG
+from gear_sonic.envs.newton_config import (
     configure_newton_robot, make_newton_simulation, newton_launcher_args,
 )
 

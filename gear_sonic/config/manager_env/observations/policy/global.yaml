@@ -10,7 +10,7 @@ defaults:
   - /manager_env/observations/terms/joint_vel@_here_
   - /manager_env/observations/terms/actions@_here_
 
-_target_: gear_sonic_newton.envs.manager_env.mdp.observations.PolicyCfg
+_target_: gear_sonic.envs.manager_env.mdp.observations.PolicyCfg
 enable_corruption: True
 concatenate_terms: True
 

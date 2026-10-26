@@ -4,8 +4,8 @@ import dataclasses
 import os
 import re
 
-from gear_sonic_newton.utils.lab_api import config_quat_xyzw
-from gear_sonic_newton.envs.newton_config import make_newton_physics, configure_newton_robot
+from gear_sonic.utils.lab_api import config_quat_xyzw
+from gear_sonic.envs.newton_config import make_newton_physics, configure_newton_robot
 
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg, RigidObjectCfg
 from isaaclab.envs import ManagerBasedRLEnvCfg, ViewerCfg
@@ -18,9 +18,9 @@ from isaaclab.utils import configclass
 import joblib
 import pxr
 
-from gear_sonic_newton.envs.manager_env.mdp import terrain
-from gear_sonic_newton.envs.manager_env.robots import g1, h2
-from gear_sonic_newton.trl.utils import common
+from gear_sonic.envs.manager_env.mdp import terrain
+from gear_sonic.envs.manager_env.robots import g1, h2
+from gear_sonic.trl.utils import common
 
 
 def _load_opencv_params_from_usd(usd_path: str) -> dict:
@@ -778,7 +778,7 @@ class MySceneCfg(InteractiveSceneCfg):
         # )
 
         # TODO: Do this better.  # noqa: TD002, TD003
-        # Copied from gear_sonic_newton/config/simulator/isaacsim.yaml
+        # Copied from gear_sonic/config/simulator/isaacsim.yaml
         # enable_cameras flag creates the ego camera for vision-based policies
         if config.get("enable_cameras", False) or config.get("render_ego", False):
             # Get camera config from nested cameras dict
@@ -1020,7 +1020,7 @@ class ModularTrackingEnvCfg(ManagerBasedRLEnvCfg):
             hasattr(self.curriculum, "force_push_curriculum")
             and self.curriculum.force_push_curriculum
         ):
-            module = importlib.import_module("gear_sonic_newton.envs.manager_env.mdp")
+            module = importlib.import_module("gear_sonic.envs.manager_env.mdp")
             self.curriculum.force_push_curriculum.params["modify_fn"] = getattr(
                 module, "step_curriculum"
             )
@@ -1029,7 +1029,7 @@ class ModularTrackingEnvCfg(ManagerBasedRLEnvCfg):
             hasattr(self.curriculum, "force_push_linear_curriculum")
             and self.curriculum.force_push_linear_curriculum
         ):
-            module = importlib.import_module("gear_sonic_newton.envs.manager_env.mdp")
+            module = importlib.import_module("gear_sonic.envs.manager_env.mdp")
             self.curriculum.force_push_linear_curriculum.params["modify_fn"] = getattr(
                 module, "linear_curriculum"
             )

@@ -1,7 +1,7 @@
 """Run the project's G1 on a plane with Newton/MJWarp, without Kit or a policy.
 
 From the repository root:
-    .env_isaaclab/bin/python -m gear_sonic_newton.scripts.smoke_newton_g1
+    .env_isaaclab/bin/python -m gear_sonic.scripts.smoke_newton_g1
 """
 
 import argparse
@@ -19,11 +19,11 @@ from isaaclab.sensors import ContactSensorCfg
 from isaaclab.sim import GroundPlaneCfg, SimulationContext
 from isaaclab.utils import configclass, instantiate
 
-from gear_sonic_newton.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG, G1_ISAACLAB_JOINTS
-from gear_sonic_newton.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
-from gear_sonic_newton.envs.newton_config import configure_newton_robot, make_newton_simulation
-from gear_sonic_newton.utils.lab_api import asset_tensor, write_joint_state, write_root_state
-from gear_sonic_newton.utils.lab_math import xyzw_to_wxyz
+from gear_sonic.envs.manager_env.robots.g1 import G1_CYLINDER_MODEL_12_DEX_CFG, G1_ISAACLAB_JOINTS
+from gear_sonic.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
+from gear_sonic.envs.newton_config import configure_newton_robot, make_newton_simulation
+from gear_sonic.utils.lab_api import asset_tensor, write_joint_state, write_root_state
+from gear_sonic.utils.lab_math import xyzw_to_wxyz
 
 
 def main():

@@ -32,26 +32,26 @@ import numpy as np
 import tyro
 import zmq
 
-from gear_sonic_newton.camera.composed_camera import ComposedCameraClientSensor
-from gear_sonic_newton.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
-from gear_sonic_newton.utils.data_collection.keyboard_subscriber import (
+from gear_sonic.camera.composed_camera import ComposedCameraClientSensor
+from gear_sonic.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
+from gear_sonic.utils.data_collection.keyboard_subscriber import (
     DEFAULT_ZMQ_KEYBOARD_PORT,
     ZMQKeyboardSubscriber,
 )
-from gear_sonic_newton.utils.data_collection.telemetry import Telemetry
-from gear_sonic_newton.utils.data_collection.transforms import compute_projected_gravity
-from gear_sonic_newton.utils.data_collection.zmq_state_subscriber import ZMQStateSubscriber
-from gear_sonic_newton.utils.inference.initial_poses import LATENT_INITIAL_MOTION_TOKEN
-from gear_sonic_newton.utils.inference.vla_utils import (
+from gear_sonic.utils.data_collection.telemetry import Telemetry
+from gear_sonic.utils.data_collection.transforms import compute_projected_gravity
+from gear_sonic.utils.data_collection.zmq_state_subscriber import ZMQStateSubscriber
+from gear_sonic.utils.inference.initial_poses import LATENT_INITIAL_MOTION_TOKEN
+from gear_sonic.utils.inference.vla_utils import (
     calculate_latency_compensated_index,
     concat_action,
     prepare_observation_for_eval,
     should_trigger_new_inference,
 )
-from gear_sonic_newton.utils.teleop.solver.hand.g1_gripper_ik_solver import (
+from gear_sonic.utils.teleop.solver.hand.g1_gripper_ik_solver import (
     G1GripperInverseKinematicsSolver,
 )
-from gear_sonic_newton.utils.teleop.zmq.zmq_planner_sender import (
+from gear_sonic.utils.teleop.zmq.zmq_planner_sender import (
     build_command_message,
     pack_pose_message,
 )

@@ -12,7 +12,7 @@ manager_env:
   events:
     base_com:
       _target_: isaaclab.managers.EventTermCfg
-      func: gear_sonic_newton.envs.manager_env.mdp:randomize_rigid_body_com
+      func: gear_sonic.envs.manager_env.mdp:randomize_rigid_body_com
       mode: startup
       params:
         asset_cfg:
@@ -25,7 +25,7 @@ manager_env:
           z: [-0.05, 0.05]
     physics_material:
       _target_: isaaclab.managers.EventTermCfg
-      func: gear_sonic_newton.envs.manager_env.mdp:randomize_rigid_body_material
+      func: gear_sonic.envs.manager_env.mdp:randomize_rigid_body_material
       mode: startup
       params:
         asset_cfg:
@@ -38,7 +38,7 @@ manager_env:
         num_buckets: 64
     add_joint_default_pos:
       _target_: isaaclab.managers.EventTermCfg
-      func: gear_sonic_newton.envs.manager_env.mdp:randomize_joint_default_pos
+      func: gear_sonic.envs.manager_env.mdp:randomize_joint_default_pos
       mode: startup
       params:
         asset_cfg:
@@ -49,7 +49,7 @@ manager_env:
         operation: add
     randomize_rigid_body_mass:
       _target_: isaaclab.managers.EventTermCfg
-      func: gear_sonic_newton.envs.manager_env.mdp:randomize_rigid_body_mass
+      func: gear_sonic.envs.manager_env.mdp:randomize_rigid_body_mass
       mode: startup
       params:
         asset_cfg:
@@ -62,7 +62,7 @@ manager_env:
         min_mass: 0.000001
     push_robot:
       _target_: isaaclab.managers.EventTermCfg
-      func: gear_sonic_newton.envs.manager_env.mdp:push_by_setting_velocity
+      func: gear_sonic.envs.manager_env.mdp:push_by_setting_velocity
       mode: interval
       interval_range_s: [0.2, 0.3]
       params:

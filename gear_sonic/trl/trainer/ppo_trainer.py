@@ -61,14 +61,14 @@ from rich import (
 )
 from tqdm import tqdm  # noqa: E402, F401
 
-from gear_sonic_newton.trl.callbacks import hv_callback_handler  # noqa: E402
-from gear_sonic_newton.trl.modules import data_utils  # noqa: E402
-from gear_sonic_newton.trl.utils import (
+from gear_sonic.trl.callbacks import hv_callback_handler  # noqa: E402
+from gear_sonic.trl.modules import data_utils  # noqa: E402
+from gear_sonic.trl.utils import (
     common,
     rl,
     scheduler,
 )
-from gear_sonic_newton.utils import average_meters  # noqa: E402
+from gear_sonic.utils import average_meters  # noqa: E402
 
 console_ = console.Console()
 import time  # noqa: E402
@@ -1747,7 +1747,7 @@ class TRLPPOTrainer(PPOTrainer):  # noqa: F405
             with common.Timer("get_rollout_data"):
                 rollout_data = self._get_rollout_data(obs_keys=obs_dict.keys())
                 if self.config.get("validate_numerics", False):
-                    from gear_sonic_newton.utils.training_validation import assert_finite
+                    from gear_sonic.utils.training_validation import assert_finite
                     assert_finite(rollout_data, "rollout")
 
                 model = self.model
@@ -2211,7 +2211,7 @@ class TRLPPOTrainer(PPOTrainer):  # noqa: F405
             The loaded checkpoint dict.
         """
         print(f"Loading checkpoint from {checkpoint_path}")  # noqa: T201
-        from gear_sonic_newton.utils.checkpoint_io import load_checkpoint, load_policy_weights
+        from gear_sonic.utils.checkpoint_io import load_checkpoint, load_policy_weights
         checkpoint = load_checkpoint(checkpoint_path, map_location=self.accelerator.device)
 
         # Load model state

@@ -7,13 +7,13 @@ import unittest
 
 import torch
 
-from gear_sonic_newton.trl.trainer.ppo_trainer import TRLPPOTrainer, episode_totals
-from gear_sonic_newton.utils.training_validation import assert_finite, parameter_hash, json_values
+from gear_sonic.trl.trainer.ppo_trainer import TRLPPOTrainer, episode_totals
+from gear_sonic.utils.training_validation import assert_finite, parameter_hash, json_values
 
 
 class TrainingValidationTests(unittest.TestCase):
     def test_motion_resample_uses_reset_observations_and_clears_partial_episodes(self):
-        from gear_sonic_newton.trl.callbacks.im_resample_callback import ImResampleCallback
+        from gear_sonic.trl.callbacks.im_resample_callback import ImResampleCallback
         trainer = object.__new__(TRLPPOTrainer)
         reset_obs = {"actor_obs": torch.ones(2, 3)}
         trainer.env = SimpleNamespace(resample_motion=lambda: reset_obs)

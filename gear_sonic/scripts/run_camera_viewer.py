@@ -9,7 +9,7 @@ Virtual environment setup (run from repo root):
     source .venv_data_collection/bin/activate
 
 Usage:
-    python gear_sonic_newton/scripts/run_camera_viewer.py --camera-host localhost --camera-port 5555
+    python gear_sonic/scripts/run_camera_viewer.py --camera-host localhost --camera-port 5555
 
 Controls (OpenCV window must be focused):
     R - Start/stop recording
@@ -31,7 +31,7 @@ import cv2
 import numpy as np
 import tyro
 
-from gear_sonic_newton.camera.composed_camera import ComposedCameraClientSensor
+from gear_sonic.camera.composed_camera import ComposedCameraClientSensor
 
 
 @dataclass

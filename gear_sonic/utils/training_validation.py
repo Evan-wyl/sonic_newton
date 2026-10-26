@@ -66,7 +66,7 @@ class TrainingValidationCallback(TrainerCallback):
         }
         env = kwargs.get("env")
         if env is not None and env.config.get("record_physics_properties", False):
-            from gear_sonic_newton.utils.lab_api import asset_tensor
+            from gear_sonic.utils.lab_api import asset_tensor
             import warp as wp
             robot = env.env.scene["robot"]
             mu = wp.to_torch(env.env.sim.physics_manager.get_model().shape_material_mu)

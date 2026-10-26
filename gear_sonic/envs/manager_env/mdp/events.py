@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 from typing import TYPE_CHECKING, Literal
 
@@ -84,7 +84,7 @@ def randomize_rigid_body_com(env, env_ids, com_range, asset_cfg):
     Equivalent to mjlab BeyondMimic's additive body_ipos randomization:
     mass and inertia about the CoM are not modified by this event.
     """
-    from gear_sonic_newton.envs.physics_adapter import set_body_com_startup
+    from gear_sonic.envs.physics_adapter import set_body_com_startup
 
     asset = env.scene[asset_cfg.name]
     if not hasattr(asset, "_sonic_nominal_body_com"):

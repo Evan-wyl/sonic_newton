@@ -27,10 +27,10 @@ Prerequisites:
     - For sim: .venv_sim must exist (see install instructions)
 
 Usage (from repo root — no venv activation needed):
-    python gear_sonic_newton/scripts/launch_data_collection.py                          # real robot (default)
-    python gear_sonic_newton/scripts/launch_data_collection.py --sim                    # MuJoCo sim
-    python gear_sonic_newton/scripts/launch_data_collection.py --no-camera-viewer       # skip viewer
-    python gear_sonic_newton/scripts/launch_data_collection.py --pico-input-source isaac-teleop  # in-process CloudXR / DeviceIO
+    python gear_sonic/scripts/launch_data_collection.py                          # real robot (default)
+    python gear_sonic/scripts/launch_data_collection.py --sim                    # MuJoCo sim
+    python gear_sonic/scripts/launch_data_collection.py --no-camera-viewer       # skip viewer
+    python gear_sonic/scripts/launch_data_collection.py --pico-input-source isaac-teleop  # in-process CloudXR / DeviceIO
 """
 
 from dataclasses import dataclass
@@ -321,7 +321,7 @@ def main(config: DataCollectionLaunchConfig):
         sim_cmd = (
             f"cd {repo_root} && "
             f"source .venv_sim/bin/activate && "
-            f"python gear_sonic_newton/scripts/run_sim_loop.py "
+            f"python gear_sonic/scripts/run_sim_loop.py "
             f"--enable-image-publish --enable-offscreen "
             f"--camera-port {config.camera_port}"
         )
@@ -371,7 +371,7 @@ def main(config: DataCollectionLaunchConfig):
     pico_cmd = (
         f"cd {repo_root} && "
         f"source .venv_teleop/bin/activate && "
-        f"python gear_sonic_newton/scripts/pico_manager_thread_server.py "
+        f"python gear_sonic/scripts/pico_manager_thread_server.py "
         f"--input-source {config.pico_input_source}"
     )
     if config.pico_manager:
@@ -391,7 +391,7 @@ def main(config: DataCollectionLaunchConfig):
         viewer_cmd = (
             f"cd {repo_root} && "
             f"source .venv_data_collection/bin/activate && "
-            f"python gear_sonic_newton/scripts/run_camera_viewer.py "
+            f"python gear_sonic/scripts/run_camera_viewer.py "
             f"--camera-host {config.camera_host} "
             f"--camera-port {config.camera_port}"
         )
@@ -402,7 +402,7 @@ def main(config: DataCollectionLaunchConfig):
     exporter_cmd = (
         f"cd {repo_root} && "
         f"source .venv_data_collection/bin/activate && "
-        f"python gear_sonic_newton/scripts/run_data_exporter.py "
+        f"python gear_sonic/scripts/run_data_exporter.py "
         f"--task-prompt '{config.task_prompt}' "
         f"--data-collection-frequency {config.data_exporter_frequency} "
         f"--camera-host {config.camera_host} "

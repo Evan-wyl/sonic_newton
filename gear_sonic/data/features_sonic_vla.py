@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from gear_sonic_newton.data.robot_model import RobotModel
+from gear_sonic.data.robot_model import RobotModel
 
 EGO_VIEW_HEIGHT: int = 480
 EGO_VIEW_WIDTH: int = 640
@@ -402,7 +402,7 @@ def get_g1_robot_model(
     high_elbow_pose: bool = False,
 ):
     """Instantiate the G1 + ThreeFinger RobotModel for Sonic VLA."""
-    from gear_sonic_newton.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
+    from gear_sonic.data.robot_model.instantiation.g1 import instantiate_g1_robot_model
 
     return instantiate_g1_robot_model(
         waist_location=waist_location,

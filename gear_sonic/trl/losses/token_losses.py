@@ -7,10 +7,10 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from gear_sonic_newton.isaac_utils import rotations
-from gear_sonic_newton.trl.utils import order_converter, torch_transform
-from gear_sonic_newton.utils import batch_normalizer
-from gear_sonic_newton.utils.motion_lib import torch_humanoid_batch
+from gear_sonic.isaac_utils import rotations
+from gear_sonic.trl.utils import order_converter, torch_transform
+from gear_sonic.utils import batch_normalizer
+from gear_sonic.utils.motion_lib import torch_humanoid_batch
 
 
 def create_humanoid(

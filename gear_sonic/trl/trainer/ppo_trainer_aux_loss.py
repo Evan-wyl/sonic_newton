@@ -1,6 +1,6 @@
 import torch
 
-from gear_sonic_newton.trl.trainer.ppo_trainer import TRLPPOTrainer
+from gear_sonic.trl.trainer.ppo_trainer import TRLPPOTrainer
 
 
 class TRLAuxLossPPOTrainer(TRLPPOTrainer):

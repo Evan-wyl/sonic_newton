@@ -10,8 +10,8 @@ import torch
 import torch.nn.functional as F
 from smplx import SMPL, SMPLX, SMPLXLayer
 
-from gear_sonic_newton.trl.utils.smplx.body_model import BodyModelSMPLH, BodyModelSMPLX
-from gear_sonic_newton.trl.utils.smplx.body_model.smplx_lite import (
+from gear_sonic.trl.utils.smplx.body_model import BodyModelSMPLH, BodyModelSMPLX
+from gear_sonic.trl.utils.smplx.body_model.smplx_lite import (
     SmplxLiteCoco17,
     SmplxLiteSmplN24,
     SmplxLiteV437Coco17,

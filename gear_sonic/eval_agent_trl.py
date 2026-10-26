@@ -58,11 +58,11 @@ from loguru import logger
 import omegaconf
 import yaml
 
-from gear_sonic_newton import train_agent_trl
-from gear_sonic_newton.trl.utils import common as trl_utils_common
-from gear_sonic_newton.trl.utils import scheduler
-from gear_sonic_newton.utils import common as rl_utils_common
-from gear_sonic_newton.utils import config_utils, obs_utils
+from gear_sonic import train_agent_trl
+from gear_sonic.trl.utils import common as trl_utils_common
+from gear_sonic.trl.utils import scheduler
+from gear_sonic.utils import common as rl_utils_common
+from gear_sonic.utils import config_utils, obs_utils
 
 config_utils.register_rl_resolvers()
 
@@ -78,7 +78,7 @@ def main(override_config: omegaconf.OmegaConf):
     console_log_level = os.environ.get("LOGURU_LEVEL", "INFO").upper()
     logger.add(sys.stdout, level=console_log_level, colorize=True)
 
-    from gear_sonic_newton.utils import logging as utils_logging
+    from gear_sonic.utils import logging as utils_logging
 
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger().addHandler(utils_logging.HydraLoggerBridge())
@@ -100,18 +100,18 @@ def main(override_config: omegaconf.OmegaConf):
             with open(config_path) as file:
                 raw = file.read()
             # Backward compatibility: rewrite internal repo module paths to release repo paths
-            raw = raw.replace("groot.rl.trl.", "gear_sonic_newton.trl.")
-            raw = raw.replace("groot.rl.envs.", "gear_sonic_newton.envs.")
-            raw = raw.replace("groot.rl.utils.", "gear_sonic_newton.utils.")
-            raw = raw.replace("groot.rl.agents.modules.modules.", "gear_sonic_newton.trl.modules.base_module.")
-            raw = raw.replace("groot.rl.agents.", "gear_sonic_newton.trl.")
-            raw = raw.replace("groot/rl/data/", "gear_sonic_newton/data/")
+            raw = raw.replace("groot.rl.trl.", "gear_sonic.trl.")
+            raw = raw.replace("groot.rl.envs.", "gear_sonic.envs.")
+            raw = raw.replace("groot.rl.utils.", "gear_sonic.utils.")
+            raw = raw.replace("groot.rl.agents.modules.modules.", "gear_sonic.trl.modules.base_module.")
+            raw = raw.replace("groot.rl.agents.", "gear_sonic.trl.")
+            raw = raw.replace("groot/rl/data/", "gear_sonic/data/")
             raw = raw.replace("assets/bm/unitree_description/", "assets/robot_description/")
             raw = raw.replace("1215_bones_seed_filtered", "bones_seed_smpl")
             # Saved module/resource paths are data, not imports of the old
             # package. Remap them before Hydra can instantiate any targets.
-            raw = raw.replace("gear_sonic.", "gear_sonic_newton.")
-            raw = raw.replace("gear_sonic/", "gear_sonic_newton/")
+            raw = raw.replace("gear_sonic_newton.", "gear_sonic.")
+            raw = raw.replace("gear_sonic_newton/", "gear_sonic/")
             raw = raw.replace("isaaclab.utils.noise.AdditiveUniformNoiseCfg", "isaaclab.utils.noise.UniformNoiseCfg")
             import io
             train_config = omegaconf.OmegaConf.load(io.StringIO(raw))
@@ -202,7 +202,7 @@ def main(override_config: omegaconf.OmegaConf):
         config.algo.config.world_size = accelerator.num_processes
     rl_utils_common.seeding(config.seed)
 
-    from gear_sonic_newton.envs.newton_config import newton_launcher_args
+    from gear_sonic.envs.newton_config import newton_launcher_args
     args_cli = newton_launcher_args(config, device)
 
     import torch
@@ -387,13 +387,13 @@ def main(override_config: omegaconf.OmegaConf):
     args.world_size = accelerator.num_processes
     state = easydict.EasyDict()
 
-    from gear_sonic_newton.trl.trainer import ppo_trainer
+    from gear_sonic.trl.trainer import ppo_trainer
 
     model = ppo_trainer.PolicyAndValueWrapper(policy, value_model)
 
     checkpoint_path = str(config.checkpoint)
     logger.info(f"Loading checkpoint from {checkpoint_path}")
-    from gear_sonic_newton.utils.checkpoint_io import load_checkpoint
+    from gear_sonic.utils.checkpoint_io import load_checkpoint
     checkpoint = load_checkpoint(checkpoint_path, map_location=accelerator.device)
 
     # Load policy state dict with backward compatibility for std/log_std
@@ -450,7 +450,7 @@ def main(override_config: omegaconf.OmegaConf):
             return obs_dict
 
         assert config.num_envs == 1, "num_envs must be 1 for exporting onnx"
-        from gear_sonic_newton.utils import inference_helpers
+        from gear_sonic.utils import inference_helpers
 
         example_obs_dict = get_example_obs()
 

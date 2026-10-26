@@ -6,7 +6,7 @@ soma:
       "joint_pos_multi_future_wrist_for_soma",
     ]
   params:
-    _target_: gear_sonic_newton.trl.modules.base_module.BaseModule
+    _target_: gear_sonic.trl.modules.base_module.BaseModule
     input_dim:
     output_dim:
     num_input_temporal_dims: ${manager_env.commands.motion.smpl_num_future_frames}

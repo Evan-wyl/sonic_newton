@@ -7,7 +7,7 @@ from typing import Any, Dict
 
 import numpy as np
 
-from gear_sonic_newton.utils.mujoco_sim.sensor_server import ImageMessageSchema, SensorServer
+from gear_sonic.utils.mujoco_sim.sensor_server import ImageMessageSchema, SensorServer
 
 
 def get_multiprocessing_info(verbose: bool = True):
@@ -163,7 +163,7 @@ class ImagePublishProcess:
                     last_data_time = current_time
 
                     try:
-                        from gear_sonic_newton.utils.mujoco_sim.sensor_server import ImageUtils
+                        from gear_sonic.utils.mujoco_sim.sensor_server import ImageUtils
 
                         image_copies = {name: arr.copy() for name, arr in shared_arrays.items()}
 

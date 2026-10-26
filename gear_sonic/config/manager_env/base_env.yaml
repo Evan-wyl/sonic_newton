@@ -19,10 +19,10 @@ defaults:
   - _self_
 
 # Environment configuration
-_target_: gear_sonic_newton.envs.manager_env.modular_tracking_env_cfg.ModularTrackingEnvCfg
+_target_: gear_sonic.envs.manager_env.modular_tracking_env_cfg.ModularTrackingEnvCfg
 
 observations:
-  _target_: gear_sonic_newton.envs.manager_env.mdp.observations.ObservationsCfg
+  _target_: gear_sonic.envs.manager_env.mdp.observations.ObservationsCfg
 
 config:
   num_envs: ${num_envs}

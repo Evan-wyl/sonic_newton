@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 from collections.abc import Sequence
 import re
 from typing import TYPE_CHECKING
 
-import gear_sonic_newton.utils.lab_math as math_utils
+import gear_sonic.utils.lab_math as math_utils
 import torch
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 from isaaclab.assets import Articulation, RigidObject
 from isaaclab.managers import ManagerTermBase, SceneEntityCfg, TerminationTermCfg
 from isaaclab.utils import configclass
-from gear_sonic_newton.utils.lab_math import (
+from gear_sonic.utils.lab_math import (
     axis_angle_from_quat,
     quat_apply_inverse,
     quat_conjugate,
@@ -25,8 +25,8 @@ from gear_sonic_newton.utils.lab_math import (
     quat_mul,
 )
 
-from gear_sonic_newton.envs.manager_env.mdp.commands import TrackingCommand, _get_body_indexes
-from gear_sonic_newton.trl.utils.torch_transform import get_heading_q
+from gear_sonic.envs.manager_env.mdp.commands import TrackingCommand, _get_body_indexes
+from gear_sonic.trl.utils.torch_transform import get_heading_q
 
 
 @configclass

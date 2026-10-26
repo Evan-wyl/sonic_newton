@@ -6,7 +6,7 @@ automatic reconnection.  Publishes all frames as a single merged
 
 Usage (on robot)::
 
-    python -m gear_sonic_newton.camera.composed_camera \\
+    python -m gear_sonic.camera.composed_camera \\
         --ego-view-camera oak \\
         --ego-view-device-id 18443010E1ABC12300 \\
         --port 5555
@@ -14,7 +14,7 @@ Usage (on robot)::
 Supported camera types: ``oak``, ``oak_mono``, ``realsense``,
 ``usb``, or a path to an ``.mp4`` file for replay testing.
 
-Run ``python -m gear_sonic_newton.camera.composed_camera --help`` for all options.
+Run ``python -m gear_sonic.camera.composed_camera --help`` for all options.
 """
 
 from collections import deque
@@ -27,8 +27,8 @@ from typing import Any
 import cv2  # noqa: F401 — imported early to avoid TSL segfault with camera SDKs
 import numpy as np
 
-from gear_sonic_newton.camera.sensor import Sensor
-from gear_sonic_newton.camera.sensor_server import (
+from gear_sonic.camera.sensor import Sensor
+from gear_sonic.camera.sensor_server import (
     CameraMountPosition,
     ImageMessageSchema,
     SensorClient,
@@ -362,7 +362,7 @@ class ComposedCameraSensor(Sensor, SensorServer):
     ) -> Sensor:
         """Instantiate a camera sensor based on camera_type (lazy imports)."""
         if camera_type in ("oak", "oak_mono"):
-            from gear_sonic_newton.camera.drivers.oak import OAKConfig, OAKSensor
+            from gear_sonic.camera.drivers.oak import OAKConfig, OAKSensor
 
             oak_config = OAKConfig()
             oak_config.use_mjpeg = self.config.use_mjpeg
@@ -373,19 +373,19 @@ class ComposedCameraSensor(Sensor, SensorServer):
             return OAKSensor(config=oak_config, mount_position=mount_position, device_id=device_id)
 
         elif camera_type == "realsense":
-            from gear_sonic_newton.camera.drivers.realsense import RealSenseSensor
+            from gear_sonic.camera.drivers.realsense import RealSenseSensor
 
             print(f"Initializing RealSense sensor for camera type: {camera_type}")
             return RealSenseSensor(mount_position=mount_position)
 
         elif camera_type.endswith(".mp4"):
-            from gear_sonic_newton.camera.drivers.dummy import ReplayDummySensor
+            from gear_sonic.camera.drivers.dummy import ReplayDummySensor
 
             print(f"Initializing Replay Dummy Sensor for camera type: {camera_type}")
             return ReplayDummySensor(video_path=camera_type)
 
         elif camera_type == "usb":
-            from gear_sonic_newton.camera.drivers.usb_camera import USBCameraConfig, USBCameraSensor
+            from gear_sonic.camera.drivers.usb_camera import USBCameraConfig, USBCameraSensor
 
             usb_config = USBCameraConfig()
             device_idx = int(device_id) if device_id else 0

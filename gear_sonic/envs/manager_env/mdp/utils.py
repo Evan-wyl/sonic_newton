@@ -2,7 +2,7 @@
 Utility functions for manager environment MDP, including debug visualization.
 """
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 import torch
 
@@ -35,7 +35,7 @@ def debug_visualize_object_projection(
         show_predicted: Whether to also visualize predicted object position (in red)
     """
     import cv2
-    from gear_sonic_newton.utils.lab_math import (
+    from gear_sonic.utils.lab_math import (
         quat_apply,
         quat_apply_inverse,
         quat_conjugate,

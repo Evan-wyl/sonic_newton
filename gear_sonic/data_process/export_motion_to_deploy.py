@@ -14,7 +14,7 @@ import joblib
 import numpy as np
 import torch
 
-from gear_sonic_newton.utils.motion_lib import motion_lib_robot
+from gear_sonic.utils.motion_lib import motion_lib_robot
 
 _G1_MAPPING_NAMES = (
     "G1_ISAACLAB_JOINTS",
@@ -34,7 +34,7 @@ def _load_g1_mappings() -> dict[str, list]:
     of the source when Isaac Sim is unavailable.
     """
     try:
-        from gear_sonic_newton.envs.manager_env.robots import g1  # noqa: PLC0415
+        from gear_sonic.envs.manager_env.robots import g1  # noqa: PLC0415
 
         return {name: getattr(g1, name) for name in _G1_MAPPING_NAMES}
     except Exception:  # noqa: BLE001 - any isaaclab/carb import failure
@@ -63,7 +63,7 @@ def _load_g1_mappings() -> dict[str, list]:
 # against the shipped ``reference/example/*/metadata.txt``.
 DEPLOY_BODY_INDEXES = [0, 4, 10, 18, 5, 11, 19, 9, 16, 22, 28, 17, 23, 29]
 
-DEFAULT_ASSET_ROOT = "gear_sonic_newton/data/assets/robot_description/mjcf/"
+DEFAULT_ASSET_ROOT = "gear_sonic/data/assets/robot_description/mjcf/"
 DEFAULT_ASSET_FILE = "g1_29dof_rev_1_0.xml"
 
 # Keys convert_motions.py consumes.

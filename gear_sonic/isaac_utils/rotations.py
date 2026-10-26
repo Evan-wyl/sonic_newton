@@ -8,11 +8,11 @@ orientation transforms (Y-up to Z-up, base rotation removal).
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-from gear_sonic_newton.isaac_utils.maths import (
+from gear_sonic.isaac_utils.maths import (
     normalize,
     copysign,
 )
-from gear_sonic_newton.trl.utils.torch_transform import angle_axis_to_quaternion, quaternion_to_angle_axis
+from gear_sonic.trl.utils.torch_transform import angle_axis_to_quaternion, quaternion_to_angle_axis
 from typing import Tuple
 import numpy as np
 from typing import List, Optional

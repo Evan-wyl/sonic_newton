@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import asset_tensor, write_joint_state, write_root_pose, write_root_state
+from gear_sonic.utils.lab_api import asset_tensor, write_joint_state, write_root_pose, write_root_state
 
 from collections.abc import Sequence
 import copy
@@ -18,7 +18,7 @@ from isaaclab.markers import VisualizationMarkers, VisualizationMarkersCfg
 from isaaclab.markers.config import DEFORMABLE_TARGET_MARKER_CFG
 import isaaclab.sim as sim_utils
 from isaaclab.utils import configclass
-from gear_sonic_newton.utils.lab_math import (
+from gear_sonic.utils.lab_math import (
     matrix_from_quat,
     quat_apply,
     quat_apply_yaw,
@@ -31,10 +31,10 @@ from gear_sonic_newton.utils.lab_math import (
 import numpy as np
 import torch
 
-from gear_sonic_newton.envs.env_utils import joint_utils
-from gear_sonic_newton.isaac_utils import rotations
-from gear_sonic_newton.trl.utils import common, order_converter, torch_transform
-from gear_sonic_newton.utils.motion_lib import motion_lib_robot
+from gear_sonic.envs.env_utils import joint_utils
+from gear_sonic.isaac_utils import rotations
+from gear_sonic.trl.utils import common, order_converter, torch_transform
+from gear_sonic.utils.motion_lib import motion_lib_robot
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
@@ -193,7 +193,7 @@ class TrackingCommand(CommandTerm):
                     "motion_file": self.cfg.motion_file,
                     "smpl_motion_file": getattr(self.cfg, "smpl_motion_file", None),
                     "asset": {
-                        "assetRoot": "gear_sonic_newton/data/assets/robot_description/mjcf/",
+                        "assetRoot": "gear_sonic/data/assets/robot_description/mjcf/",
                         "assetFileName": "g1_29dof_rev_1_0.xml",
                         "urdfFileName": "",
                     },
@@ -1641,7 +1641,7 @@ class TrackingCommand(CommandTerm):
         obj_pos = self.object_root_pos[:, 0, :]  # (num_envs, 3)
         obj_quat = self.object_root_quat[:, 0, :]  # (num_envs, 4)
 
-        from gear_sonic_newton.isaac_utils import rotations
+        from gear_sonic.isaac_utils import rotations
 
         rotated_center = rotations.quat_rotate(obj_quat, contact_center, w_last=False)
         world_center = rotated_center + obj_pos
@@ -3650,7 +3650,7 @@ class ForceTrackingCommand(CommandTerm):
         Returns:
             Tensor of shape ``(num_envs, 2, 3, num_dof)``.
         """
-        from gear_sonic_newton.envs.physics_adapter import get_linear_jacobian
+        from gear_sonic.envs.physics_adapter import get_linear_jacobian
         return torch.stack([
             get_linear_jacobian(self.robot, self.robot.body_names[index], self.robot.joint_names)
             for index in self.vr_3point_body_indices[:2]

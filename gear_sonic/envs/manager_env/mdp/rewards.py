@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 from typing import TYPE_CHECKING
 
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils import configclass
-from gear_sonic_newton.utils.lab_math import (
+from gear_sonic.utils.lab_math import (
     quat_apply,
     quat_error_magnitude,
     quat_inv,
@@ -16,7 +16,7 @@ from gear_sonic_newton.utils.lab_math import (
 )
 import torch
 
-from gear_sonic_newton.envs.manager_env.mdp.commands import (
+from gear_sonic.envs.manager_env.mdp.commands import (
     ForceTrackingCommand,
     TrackingCommand,
     _get_body_indexes,

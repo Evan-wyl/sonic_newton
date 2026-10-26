@@ -1,5 +1,5 @@
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 from datetime import datetime
 import gc
 import json
@@ -316,7 +316,7 @@ class ImEvalCallback(TrainerCallback):
             pos_error = torch.norm(target_obj_pos - current_obj_pos, dim=-1)  # (num_envs,)
 
             # Quaternion error: angle between two quaternions
-            from gear_sonic_newton.utils.lab_math import quat_error_magnitude
+            from gear_sonic.utils.lab_math import quat_error_magnitude
 
             ori_error = quat_error_magnitude(target_obj_quat, current_obj_quat)  # (num_envs,)
 
@@ -527,7 +527,7 @@ class ImEvalCallback(TrainerCallback):
                     exit()
 
                 """
-                # gear_sonic_newton/config/manager_env/commands/terms/motion.yaml
+                # gear_sonic/config/manager_env/commands/terms/motion.yaml
                 body_names: [
                     "pelvis",
                     "left_hip_roll_link",

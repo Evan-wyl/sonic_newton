@@ -11,9 +11,9 @@ from omegaconf import OmegaConf
 
 import torch
 
-from gear_sonic_newton.utils.average_meters import TensorAverageMeter
-from gear_sonic_newton.utils.checkpoint_io import load_checkpoint, load_policy_weights
-from gear_sonic_newton.utils.config_utils import resolve_motion_paths
+from gear_sonic.utils.average_meters import TensorAverageMeter
+from gear_sonic.utils.checkpoint_io import load_checkpoint, load_policy_weights
+from gear_sonic.utils.config_utils import resolve_motion_paths
 
 
 class CheckpointTests(unittest.TestCase):
@@ -26,13 +26,13 @@ class CheckpointTests(unittest.TestCase):
             for entry in original.infolist():
                 data = original.read(entry.filename)
                 if entry.filename.endswith("data.pkl"):
-                    data = data.replace(b"gear_sonic_newton.utils.average_meters", b"gear_sonic.utils.average_meters")
+                    data = data.replace(b"gear_sonic.utils.average_meters", b"gear_sonic_newton.utils.average_meters")
                 rewritten.writestr(entry, data)
         legacy.seek(0)
         restored = load_checkpoint(legacy)
         self.assertIs(type(restored["metadata"]), TensorAverageMeter)
         torch.testing.assert_close(restored["tensor"], torch.ones(2))
-        self.assertNotIn("gear_sonic.utils.average_meters", sys.modules)
+        self.assertNotIn("gear_sonic_newton.utils.average_meters", sys.modules)
 
     def test_std_conversion_preserves_input(self):
         policy = torch.nn.Module()
@@ -65,7 +65,7 @@ class CheckpointTests(unittest.TestCase):
                          "data/motion_lib_bones_seed/robot_filtered")
 
     def test_metrics_capture_terminal_state_before_reset(self):
-        from gear_sonic_newton.utils.tracking_metrics import TrackingMetricsRecorder
+        from gear_sonic.utils.tracking_metrics import TrackingMetricsRecorder
         command = SimpleNamespace(
             body_pos_w=torch.ones(2, 1, 3), robot_body_pos_w=torch.zeros(2, 1, 3),
             joint_pos=torch.ones(2, 1), robot_joint_pos=torch.zeros(2, 1),

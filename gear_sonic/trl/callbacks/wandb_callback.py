@@ -1,7 +1,7 @@
 from transformers import TrainerCallback
 import wandb
 
-from gear_sonic_newton.trl.utils.common import wandb_run_exists
+from gear_sonic.trl.utils.common import wandb_run_exists
 
 
 class WandbCallback(TrainerCallback):

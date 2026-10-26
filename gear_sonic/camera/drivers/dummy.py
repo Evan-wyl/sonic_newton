@@ -15,8 +15,8 @@ try:
 except ImportError:
     gym = None  # type: ignore[assignment]
 
-from gear_sonic_newton.camera.sensor import Sensor
-from gear_sonic_newton.camera.sensor_server import ImageMessageSchema
+from gear_sonic.camera.sensor import Sensor
+from gear_sonic.camera.sensor_server import ImageMessageSchema
 
 
 class DummySensor(Sensor):

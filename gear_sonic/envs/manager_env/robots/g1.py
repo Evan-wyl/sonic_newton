@@ -5,7 +5,7 @@ from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.assets.articulation import ArticulationCfg
 import isaaclab.sim as sim_utils
 
-ASSET_DIR = "gear_sonic_newton/data/assets"
+ASSET_DIR = "gear_sonic/data/assets"
 
 ARMATURE_5020 = 0.003609725
 ARMATURE_7520_14 = 0.010177520

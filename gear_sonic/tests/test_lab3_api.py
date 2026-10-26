@@ -16,7 +16,7 @@ import warp as wp
 from isaaclab.assets.articulation.base_articulation import BaseArticulation
 from isaaclab.utils.warp.proxy_array import ProxyArray
 
-from gear_sonic_newton.utils import lab_api as api, lab_math as m
+from gear_sonic.utils import lab_api as api, lab_math as m
 
 
 class TestLab3Boundary(unittest.TestCase):
@@ -106,7 +106,7 @@ class TestLab3Boundary(unittest.TestCase):
             inspect.signature(getattr(BaseArticulation, name)).bind(asset, **kwargs)
 
     def test_robot_configs_keep_order_and_action_scales(self):
-        from gear_sonic_newton.envs.manager_env.robots import g1, h2
+        from gear_sonic.envs.manager_env.robots import g1, h2
         for cfg in [g1.G1_CYLINDER_MODEL_12_DEX_CFG, h2.H2_CFG]:
             self.assertEqual(cfg.joint_ordering, "physx")
             self.assertEqual(cfg.body_ordering, "physx")
@@ -115,7 +115,7 @@ class TestLab3Boundary(unittest.TestCase):
 
     def test_training_config_composition(self):
         from hydra import compose, initialize_config_dir
-        from gear_sonic_newton.utils.config_utils import register_rl_resolvers
+        from gear_sonic.utils.config_utils import register_rl_resolvers
         register_rl_resolvers()
         register_rl_resolvers()
         config_dir = str(Path(__file__).resolve().parents[1] / "config")
@@ -123,8 +123,8 @@ class TestLab3Boundary(unittest.TestCase):
             with self.subTest(exp=exp), initialize_config_dir(config_dir=config_dir):
                 cfg = compose(config_name="base", overrides=[f"+exp=manager/universal_token/all_modes/{exp}"])
                 self.assertEqual(cfg.base_dir, "logs_rl_newton")
-                self.assertEqual(cfg.manager_env._target_, "gear_sonic_newton.envs.manager_env.modular_tracking_env_cfg.ModularTrackingEnvCfg")
-                self.assertTrue(cfg.algo.config.actor._target_.startswith("gear_sonic_newton."))
+                self.assertEqual(cfg.manager_env._target_, "gear_sonic.envs.manager_env.modular_tracking_env_cfg.ModularTrackingEnvCfg")
+                self.assertTrue(cfg.algo.config.actor._target_.startswith("gear_sonic."))
                 self.assertIn("motion", cfg.manager_env.commands)
                 self.assertIn("gravity_dir", cfg.manager_env.observations.policy)
                 self.assertIn("base_com", cfg.manager_env.events)

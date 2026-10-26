@@ -7,12 +7,12 @@ Quickstart (on robot)::
 
     bash install_scripts/install_camera_server.sh
     source .venv_camera/bin/activate
-    python -m gear_sonic_newton.camera.composed_camera --ego-view-camera oak
+    python -m gear_sonic.camera.composed_camera --ego-view-camera oak
 
 See ``docs/source/tutorials/data_collection.md`` for full setup instructions.
 """
 
-from gear_sonic_newton.camera.sensor_server import (
+from gear_sonic.camera.sensor_server import (
     CameraMountPosition,
     ImageMessageSchema,
     ImageUtils,

@@ -13,7 +13,7 @@ from typing import Any, Literal, Optional
 
 import yaml
 
-from gear_sonic_newton.utils.network.network_utils import resolve_interface
+from gear_sonic.utils.network.network_utils import resolve_interface
 
 WBC_VERSIONS = ["sonic_model12"]
 
@@ -308,9 +308,9 @@ class BaseConfig(ArgsConfigTemplate):
 
     def load_wbc_yaml(self) -> dict:
         """Load and merge wbc yaml with dataclass overrides"""
-        import gear_sonic_newton
+        import gear_sonic
 
-        gear_sonic_path = Path(os.path.dirname(gear_sonic_newton.__file__))
+        gear_sonic_path = Path(os.path.dirname(gear_sonic.__file__))
         configs_dir = gear_sonic_path / "utils" / "mujoco_sim" / "wbc_configs"
 
         if self.wbc_version == "sonic_model12":

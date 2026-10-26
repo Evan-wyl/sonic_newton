@@ -1,5 +1,5 @@
 
-from gear_sonic_newton.utils.lab_api import as_torch, asset_tensor, write_joint_state, write_root_pose, write_root_state
+from gear_sonic.utils.lab_api import as_torch, asset_tensor, write_joint_state, write_root_pose, write_root_state
 from typing import TYPE_CHECKING  # noqa: I001
 
 import numpy as np
@@ -7,13 +7,13 @@ from omegaconf import OmegaConf
 from pxr import Gf, UsdGeom
 import torch
 from loguru import logger
-from gear_sonic_newton.trl.utils.common import custom_instantiate
+from gear_sonic.trl.utils.common import custom_instantiate
 
 if TYPE_CHECKING:
     from isaaclab.envs.manager_based_rl_env import ManagerBasedEnv
 
 # Import joint index functions (single source of truth)
-from gear_sonic_newton.envs.env_utils.joint_utils import get_body_joint_indices, get_hand_joint_indices
+from gear_sonic.envs.env_utils.joint_utils import get_body_joint_indices, get_hand_joint_indices
 
 # Import visualization markers for contact point visualization
 try:
@@ -1796,7 +1796,7 @@ class ManagerEnvWrapper:
         if not getattr(self, "_replay_contact_visualizers", None):
             return
 
-        from gear_sonic_newton.isaac_utils.rotations import quat_rotate
+        from gear_sonic.isaac_utils.rotations import quat_rotate
 
         # Get object pose (shared by both hands)
         object_root_pos = self._motion_lib.get_object_root_pos(

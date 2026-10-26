@@ -21,7 +21,7 @@ import scipy.ndimage.filters as filters
 from scipy.spatial.transform import Rotation as sRot
 import torch
 
-from gear_sonic_newton.isaac_utils.rotations import (
+from gear_sonic.isaac_utils.rotations import (
     axis_angle_to_quaternion,
     matrix_to_quaternion,
     quat_angle_axis,
@@ -32,7 +32,7 @@ from gear_sonic_newton.isaac_utils.rotations import (
     slerp,
     wxyz_to_xyzw,
 )
-from gear_sonic_newton.trl.utils.torch_transform import quaternion_to_angle_axis
+from gear_sonic.trl.utils.torch_transform import quaternion_to_angle_axis
 
 # Configure logging
 # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')

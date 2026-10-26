@@ -5,7 +5,7 @@ from isaaclab.managers.recorder_manager import DatasetExportMode, RecorderManage
 from isaaclab.utils import configclass
 import torch
 
-from gear_sonic_newton.utils.lab_api import asset_tensor
+from gear_sonic.utils.lab_api import asset_tensor
 
 
 class TrackingMetricsRecorder(RecorderTerm):

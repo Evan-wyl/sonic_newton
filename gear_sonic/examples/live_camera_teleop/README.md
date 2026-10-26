@@ -56,11 +56,11 @@ lowest-numbered one is usually the capture node.
 export GEMX_ROOT=/path/to/GEM-X
 
 # with a display: live overlay window, press q to quit
-python gear_sonic_newton/examples/live_camera_teleop/webcam_stream.py \
+python gear_sonic/examples/live_camera_teleop/webcam_stream.py \
     --source 0 --kp-only --show
 
 # headless (SSH/VNC): write an overlay clip instead
-python gear_sonic_newton/examples/live_camera_teleop/webcam_stream.py \
+python gear_sonic/examples/live_camera_teleop/webcam_stream.py \
     --source 0 --kp-only --save webcam_test.mp4 --max-frames 60
 ```
 
@@ -110,7 +110,7 @@ Run the SONIC deploy in ZMQ mode first (sim shown; use `real` for hardware):
 
 ```bash
 # terminal 1 (repo root): MuJoCo sim
-python gear_sonic_newton/scripts/run_sim_loop.py
+python gear_sonic/scripts/run_sim_loop.py
 # terminal 2 (gear_sonic_deploy/): deploy, ZMQ input
 bash deploy.sh --input-type zmq --zmq-host localhost --zmq-port 5556 --zmq-topic pose --zmq-conflate sim
 ```
@@ -118,13 +118,13 @@ bash deploy.sh --input-type zmq --zmq-host localhost --zmq-port 5556 --zmq-topic
 ### Live webcam (Protocol v3 / smpl encoder)
 ```bash
 export GEMX_ROOT=/path/to/GEM-X
-python gear_sonic_newton/examples/live_camera_teleop/webcam_stream.py --source 0 \
+python gear_sonic/examples/live_camera_teleop/webcam_stream.py --source 0 \
     --stream-sonic --window 30 --smooth 0.8
 ```
 
 ### Offline SMPL verify (no camera)
 ```bash
-python gear_sonic_newton/examples/live_camera_teleop/soma_pt_to_sonic_v3.py \
+python gear_sonic/examples/live_camera_teleop/soma_pt_to_sonic_v3.py \
     --gemx-root /path/to/GEM-X --pt /path/to/hpe_results.pt --fps 30 --loop
 ```
 

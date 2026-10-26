@@ -3,7 +3,7 @@ g1_kin:
   outputs: ["command_multi_future_nonflat", "motion_anchor_ori_b_mf_nonflat"]
   has_temporal_dim: True
   params:
-    _target_: gear_sonic_newton.trl.modules.base_module.BaseModule
+    _target_: gear_sonic.trl.modules.base_module.BaseModule
     input_dim:
     output_dim:
     num_input_temporal_dims: ${algo.config.actor.backbone.max_num_tokens}

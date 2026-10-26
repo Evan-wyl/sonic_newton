@@ -12,4 +12,4 @@ defaults:
   - /manager_env/rewards/terms/joint_limit@_here_
   - /manager_env/rewards/terms/undesired_contacts@_here_
 
-_target_: gear_sonic_newton.envs.manager_env.mdp.rewards.RewardsCfg
+_target_: gear_sonic.envs.manager_env.mdp.rewards.RewardsCfg

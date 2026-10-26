@@ -1,4 +1,4 @@
 read_eval:
-  _target_: gear_sonic_newton.trl.callbacks.read_eval_callback.ReadEvalCallback
+  _target_: gear_sonic.trl.callbacks.read_eval_callback.ReadEvalCallback
   eval_dir: ${experiment_dir}/eval_newton
   check_interval: 1

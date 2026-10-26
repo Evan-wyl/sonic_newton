@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from gear_sonic_newton.data.robot_model.robot_model import RobotModel
-from gear_sonic_newton.data.robot_model.supplemental_info.g1.g1_supplemental_info import (
+from gear_sonic.data.robot_model.robot_model import RobotModel
+from gear_sonic.data.robot_model.supplemental_info.g1.g1_supplemental_info import (
     ElbowPose,
     G1SupplementalInfo,
     WaistLocation,

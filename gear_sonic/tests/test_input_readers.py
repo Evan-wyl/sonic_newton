@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from gear_sonic_newton.utils.teleop.input_readers import _body_data_to_24x7
+from gear_sonic.utils.teleop.input_readers import _body_data_to_24x7
 
 
 class MockBodyJoints:

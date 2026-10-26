@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 import mujoco
 
-from gear_sonic_newton.utils.mujoco_sim.sim_utils import get_body_geom_ids
+from gear_sonic.utils.mujoco_sim.sim_utils import get_body_geom_ids
 
 
 def check_contact(

@@ -24,12 +24,12 @@ manager_env:
 algo:
   config:
     actor:
-      _target_: gear_sonic_newton.trl.modules.actor_critic_modules.Actor
+      _target_: gear_sonic.trl.modules.actor_critic_modules.Actor
       running_mean_std: false
       input_obs_dict: true
       has_aux_loss: true
       backbone:
-        _target_: gear_sonic_newton.trl.modules.universal_token_modules.UniversalTokenModule
+        _target_: gear_sonic.trl.modules.universal_token_modules.UniversalTokenModule
         num_future_frames: ${manager_env.commands.motion.num_future_frames}
         proprioception_features: ["actor_obs"]
         encoder_sample_probs: ${manager_env.commands.motion.encoder_sample_probs}

@@ -1,6 +1,6 @@
 joint_limit:
   _target_: isaaclab.managers.RewardTermCfg
-  func: gear_sonic_newton.envs.manager_env.mdp:joint_pos_limits
+  func: gear_sonic.envs.manager_env.mdp:joint_pos_limits
   weight: -10.0
   params:
     asset_cfg:

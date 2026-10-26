@@ -97,13 +97,13 @@ class IsaacLabMuJoCoConverter(ABC):
 class G1Converter(IsaacLabMuJoCoConverter):
     """G1 ordering converter.
 
-    Imports G1 body/DOF/joint mappings from gear_sonic_newton.envs.manager_env.robots.g1.
+    Imports G1 body/DOF/joint mappings from gear_sonic.envs.manager_env.robots.g1.
     """
 
     def __init__(self):
         # Lazy import to avoid circular dependency:
         # order_converter -> g1 -> mdp/__init__ -> commands -> order_converter
-        from gear_sonic_newton.envs.manager_env.robots.g1 import (
+        from gear_sonic.envs.manager_env.robots.g1 import (
             G1_ISAACLAB_JOINTS,
             G1_ISAACLAB_TO_MUJOCO_BODY,
             G1_ISAACLAB_TO_MUJOCO_DOF,
@@ -180,7 +180,7 @@ class H2Converter(IsaacLabMuJoCoConverter):
     """H2 robot joint/body order converter between IsaacLab and MuJoCo conventions."""
 
     def __init__(self):
-        from gear_sonic_newton.envs.manager_env.robots.h2 import (
+        from gear_sonic.envs.manager_env.robots.h2 import (
             H2_ISAACLAB_JOINTS,
             H2_ISAACLAB_TO_MUJOCO_BODY,
             H2_ISAACLAB_TO_MUJOCO_DOF,

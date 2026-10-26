@@ -1,2 +1,2 @@
 wandb:
-  _target_: gear_sonic_newton.trl.callbacks.wandb_callback.WandbCallback
+  _target_: gear_sonic.trl.callbacks.wandb_callback.WandbCallback

@@ -1,6 +1,6 @@
 add_joint_default_pos:
   _target_: isaaclab.managers.EventTermCfg
-  func: gear_sonic_newton.envs.manager_env.mdp:randomize_joint_default_pos
+  func: gear_sonic.envs.manager_env.mdp:randomize_joint_default_pos
   mode: "startup"
   params:
     asset_cfg:

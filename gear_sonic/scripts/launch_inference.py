@@ -27,9 +27,9 @@ Prerequisites:
     - Isaac-GR00T PolicyServer running separately
 
 Usage (from repo root — no venv activation needed):
-    python gear_sonic_newton/scripts/launch_inference.py                        # real robot
-    python gear_sonic_newton/scripts/launch_inference.py --sim                  # MuJoCo sim
-    python gear_sonic_newton/scripts/launch_inference.py --no-data-exporter     # no recording pane
+    python gear_sonic/scripts/launch_inference.py                        # real robot
+    python gear_sonic/scripts/launch_inference.py --sim                  # MuJoCo sim
+    python gear_sonic/scripts/launch_inference.py --no-data-exporter     # no recording pane
 """
 
 from dataclasses import dataclass
@@ -293,7 +293,7 @@ def main(config: InferenceLaunchConfig):
         sim_cmd = (
             f"cd {repo_root} && "
             f"source .venv_sim/bin/activate && "
-            f"python gear_sonic_newton/scripts/run_sim_loop.py "
+            f"python gear_sonic/scripts/run_sim_loop.py "
             f"--enable-image-publish --enable-offscreen "
             f"--camera-port {config.camera_port}"
         )
@@ -370,7 +370,7 @@ def main(config: InferenceLaunchConfig):
         exporter_cmd = (
             f"cd {repo_root} && "
             f"source .venv_data_collection/bin/activate && "
-            f"python gear_sonic_newton/scripts/run_data_exporter.py "
+            f"python gear_sonic/scripts/run_data_exporter.py "
             f"--task-prompt '{exporter_prompt}' "
             f"--data-collection-frequency {config.data_exporter_frequency} "
             f"--camera-host {config.camera_host} "
@@ -386,7 +386,7 @@ def main(config: InferenceLaunchConfig):
     inference_cmd = (
         f"cd {repo_root} && "
         f"source .venv_inference/bin/activate && "
-        f"python gear_sonic_newton/scripts/run_vla_inference.py "
+        f"python gear_sonic/scripts/run_vla_inference.py "
         f"--host {config.policy_host} "
         f"--port {config.policy_port} "
         f"--embodiment-tag {config.embodiment_tag} "

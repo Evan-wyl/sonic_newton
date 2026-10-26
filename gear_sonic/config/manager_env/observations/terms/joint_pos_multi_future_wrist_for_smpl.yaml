@@ -1,6 +1,6 @@
 joint_pos_multi_future_wrist_for_smpl:
   _target_: isaaclab.managers.ObservationTermCfg
-  func: gear_sonic_newton.envs.manager_env.mdp:joint_pos_multi_future_select_joints_for_smpl
+  func: gear_sonic.envs.manager_env.mdp:joint_pos_multi_future_select_joints_for_smpl
   params:
     command_name: "motion"
     joints_idx: [23, 24, 25, 26, 27, 28]

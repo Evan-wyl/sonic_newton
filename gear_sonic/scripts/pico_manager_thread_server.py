@@ -35,10 +35,10 @@ from scipy.spatial.transform import Rotation as R, Rotation as sRot
 import torch
 import zmq
 
-from gear_sonic_newton.utils.teleop import input_readers
-from gear_sonic_newton.utils.teleop.zmq.zmq_poller import ZMQPoller
-from gear_sonic_newton.trl.utils.rotation_conversion import decompose_rotation_aa
-from gear_sonic_newton.trl.utils.torch_transform import (
+from gear_sonic.utils.teleop import input_readers
+from gear_sonic.utils.teleop.zmq.zmq_poller import ZMQPoller
+from gear_sonic.trl.utils.rotation_conversion import decompose_rotation_aa
+from gear_sonic.trl.utils.torch_transform import (
     angle_axis_to_quaternion,
     compute_human_joints,
     quat_apply,
@@ -48,7 +48,7 @@ from gear_sonic_newton.trl.utils.torch_transform import (
 )
 
 try:
-    from gear_sonic_newton.utils.teleop.zmq.zmq_planner_sender import (
+    from gear_sonic.utils.teleop.zmq.zmq_planner_sender import (
         build_command_message,
         build_planner_message,
         pack_pose_message,
@@ -66,9 +66,9 @@ except ImportError:
 
 
 try:
-    from gear_sonic_newton.isaac_utils.rotations import remove_smpl_base_rot, smpl_root_ytoz_up
+    from gear_sonic.isaac_utils.rotations import remove_smpl_base_rot, smpl_root_ytoz_up
 except ImportError:
-    print("Warning: gear_sonic_newton.isaac_utils.rotations not available.")
+    print("Warning: gear_sonic.isaac_utils.rotations not available.")
     remove_smpl_base_rot = None
     smpl_root_ytoz_up = None
 
@@ -78,7 +78,7 @@ except ImportError:
     xrt = None
 
 try:
-    from gear_sonic_newton.utils.teleop.solver.hand.g1_gripper_ik_solver import (
+    from gear_sonic.utils.teleop.solver.hand.g1_gripper_ik_solver import (
         G1GripperInverseKinematicsSolver,
     )
 except ImportError:
@@ -86,13 +86,13 @@ except ImportError:
     G1GripperInverseKinematicsSolver = None
 
 try:
-    from gear_sonic_newton.utils.teleop.vis.vr3pt_pose_visualizer import VR3PtPoseVisualizer
+    from gear_sonic.utils.teleop.vis.vr3pt_pose_visualizer import VR3PtPoseVisualizer
 except ImportError:
     print("Warning: VR3PtPoseVisualizer not available (pyvista may not be installed).")
     VR3PtPoseVisualizer = None
 
 try:
-    from gear_sonic_newton.utils.teleop.vis.vr3pt_pose_visualizer import get_g1_key_frame_poses
+    from gear_sonic.utils.teleop.vis.vr3pt_pose_visualizer import get_g1_key_frame_poses
 except ImportError:
     print("Warning: get_g1_key_frame_poses not available (pyvista may not be installed).")
     get_g1_key_frame_poses = None
@@ -986,7 +986,7 @@ class ThreePointPose:
         # Robot model for FK-based calibration (headless, no display required)
         self._robot_model = robot_model
         if self._robot_model is None:
-            from gear_sonic_newton.data.robot_model.instantiation.g1 import (
+            from gear_sonic.data.robot_model.instantiation.g1 import (
                 instantiate_g1_robot_model,
             )
 
@@ -1122,7 +1122,7 @@ class ThreePointPose:
         if get_g1_key_frame_poses is None:
             raise RuntimeError(
                 "get_g1_key_frame_poses could not be imported. "
-                "Ensure gear_sonic_newton.utils.teleop.vis.vr3pt_pose_visualizer is available."
+                "Ensure gear_sonic.utils.teleop.vis.vr3pt_pose_visualizer is available."
             )
 
         # Convert 29-DOF override to full model config if needed

@@ -52,5 +52,5 @@ callbacks:
     save_last_frequency: 1
     max_disk_usage: null
   training_validation:
-    _target_: gear_sonic_newton.utils.training_validation.TrainingValidationCallback
+    _target_: gear_sonic.utils.training_validation.TrainingValidationCallback
     output_dir: ${experiment_dir}

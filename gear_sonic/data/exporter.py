@@ -31,7 +31,7 @@ from PIL import Image as PILImage
 import torch
 from torchvision import transforms
 
-from gear_sonic_newton.data.video_writer import VideoWriter
+from gear_sonic.data.video_writer import VideoWriter
 
 disable_progress_bars()
 
