@@ -3,7 +3,7 @@ requires = ["setuptools>=67", "wheel", "pip"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gear_sonic_newton"
+name = "gear_sonic"
 dynamic = ["version"]
 readme = {text = "Gear Sonic Newton/MJWarp development copy - Whole Body Control", content-type = "text/plain"}
 classifiers = [
@@ -43,7 +43,7 @@ evaluation = [
 ]
 # Teleop: minimal deps for running ZMQ-based teleop
 # pico_manager_thread_server.py + visualization (pyzmq, pyvista, pinocchio FK)
-# Usage: pip install -e "gear_sonic_newton[teleop]"
+# Usage: pip install -e "gear_sonic[teleop]"
 teleop = [
     "pyzmq",
     "msgpack",
@@ -52,7 +52,7 @@ teleop = [
     "pyvista; platform_machine != 'aarch64'",
 ]
 # MuJoCo simulation (run_sim_loop.py and related scripts)
-# Usage: pip install -e "gear_sonic_newton[sim]"
+# Usage: pip install -e "gear_sonic[sim]"
 sim = [
     "mujoco",
     "tyro",
@@ -64,7 +64,7 @@ sim = [
     "opencv-python",
 ]
 # Data collection: Sonic VLA data exporter with LeRobot dataset output
-# Usage: pip install -e "gear_sonic_newton[data_collection]"
+# Usage: pip install -e "gear_sonic[data_collection]"
 data_collection = [
     "pyzmq",
     "msgpack",
@@ -80,7 +80,7 @@ data_collection = [
 # Camera server: runs on the robot to publish camera frames over ZMQ
 # Includes depthai (OAK cameras) by default. For other SDKs (pyrealsense2),
 # install them separately into the .venv_camera venv.
-# Usage: pip install -e "gear_sonic_newton[camera]"
+# Usage: pip install -e "gear_sonic[camera]"
 camera = [
     "pyzmq",
     "msgpack",
@@ -91,7 +91,7 @@ camera = [
     "requests",
 ]
 # Inference: VLA inference client for running Isaac-GR00T policies
-# Usage: pip install -e "gear_sonic_newton[inference]"
+# Usage: pip install -e "gear_sonic[inference]"
 inference = [
     "pyzmq",
     "msgpack",
@@ -103,7 +103,7 @@ inference = [
     "Isaac-GR00T @ git+https://github.com/NVIDIA/Isaac-GR00T.git",
 ]
 # Training: full RL training stack (Isaac Lab must be installed separately)
-# Usage: pip install -e "gear_sonic_newton[training]"
+# Usage: pip install -e "gear_sonic[training]"
 training = [
     "hydra-core>=1.4.0rc2,<1.5",
     "wandb",
@@ -119,13 +119,13 @@ training = [
 
 [tool.setuptools.packages.find]
 where = [".."]
-include = ["gear_sonic_newton", "gear_sonic_newton.*"]
+include = ["gear_sonic", "gear_sonic.*"]
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.package-data]
-gear_sonic_newton = ["py.typed", "**/*.json", "**/*.yaml", "data/assets/usd_schemas/**/*.usda", "data/assets/usd_schemas/licenses/*", "data/assets/usd_schemas/README.md"]
+gear_sonic = ["py.typed", "**/*.json", "**/*.yaml", "data/assets/usd_schemas/**/*.usda", "data/assets/usd_schemas/licenses/*", "data/assets/usd_schemas/README.md"]
 
 [tool.setuptools.dynamic]
-version = {attr = "gear_sonic_newton.version.VERSION"}
+version = {attr = "gear_sonic.version.VERSION"}
