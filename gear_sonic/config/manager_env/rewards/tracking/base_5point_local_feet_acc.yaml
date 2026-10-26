@@ -1,0 +1,18 @@
+# @package manager_env.rewards
+# Standard reward composition - combines all reward terms
+
+defaults:
+  - /manager_env/rewards/terms/tracking_anchor_pos@_here_
+  - /manager_env/rewards/terms/tracking_anchor_ori@_here_
+  - /manager_env/rewards/terms/tracking_relative_body_pos@_here_
+  - /manager_env/rewards/terms/tracking_relative_body_ori@_here_
+  - /manager_env/rewards/terms/tracking_body_linvel@_here_
+  - /manager_env/rewards/terms/tracking_body_angvel@_here_
+  - /manager_env/rewards/terms/action_rate_l2@_here_
+  - /manager_env/rewards/terms/joint_limit@_here_
+  - /manager_env/rewards/terms/undesired_contacts@_here_
+  - /manager_env/rewards/terms/anti_shake_ang_vel@_here_
+  - /manager_env/rewards/terms/tracking_vr_5point_local@_here_
+  - /manager_env/rewards/terms/feet_acc@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.rewards.RewardsCfg

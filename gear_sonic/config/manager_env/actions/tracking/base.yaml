@@ -1,0 +1,7 @@
+# @package manager_env.actions
+# Standard action composition
+
+defaults:
+  - /manager_env/actions/terms/joint_pos@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.actions.ActionsCfg

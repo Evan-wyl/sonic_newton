@@ -1,0 +1,56 @@
+# @package _global_
+# Stage 5 validation only; no camera, event randomization, or external logging.
+defaults:
+  - /exp/manager/universal_token/all_modes/sonic_release
+  - _self_
+
+num_envs: 4
+headless: true
+use_wandb: false
+project_name: Newton_Step5
+experiment_name: short_train
+experiment_dir: ${base_dir}/${project_name}/${experiment_name}-${timestamp}
+
+algo:
+  config:
+    num_learning_iterations: 3
+    num_steps_per_env: 16
+    num_learning_epochs: 2
+    num_mini_batches: 2
+    validate_numerics: true
+    empty_cache_every_n_ppo_epoch: -1
+
+manager_env:
+  config:
+    terrain_type: plane
+  events:
+    physics_material: null
+    add_joint_default_pos: null
+    base_com: null
+    push_robot: null
+    randomize_rigid_body_mass: null
+  commands:
+    motion:
+      debug_vis: false
+      cat_upper_body_poses: false
+      freeze_frame_aug: false
+      encoder_sample_probs:
+        g1: 1.0
+        teleop: 0.0
+        smpl: 0.0
+      filter_motion_keys: [idle_turn_360_004__A056_M, walk_ff_stop_270_001__A055]
+      motion_lib_cfg:
+        multi_thread: false
+        filter_motion_keys: ${manager_env.commands.motion.filter_motion_keys}
+
+callbacks:
+  wandb: null
+  read_eval: null
+  im_resample: null
+  model_save:
+    save_frequency: 1000000
+    save_last_frequency: 1
+    max_disk_usage: null
+  training_validation:
+    _target_: gear_sonic_newton.utils.training_validation.TrainingValidationCallback
+    output_dir: ${experiment_dir}

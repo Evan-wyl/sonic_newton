@@ -1,0 +1,10 @@
+# @package manager_env.events
+# Standard event composition
+
+defaults:
+  - /manager_env/events/terms/physics_material@_here_
+  - /manager_env/events/terms/add_joint_default_pos@_here_
+  - /manager_env/events/terms/base_com@_here_
+  - /manager_env/events/terms/push_robot@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.events.EventCfg

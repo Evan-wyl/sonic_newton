@@ -1,0 +1,31 @@
+# @package _global_
+# Bounded scale validation; retains sonic_release task/data/PPO settings.
+defaults:
+  - /exp/manager/universal_token/all_modes/sonic_release
+  - _self_
+
+num_envs: 4096
+headless: true
+use_wandb: false
+project_name: Newton_Step7
+experiment_name: scale_train
+experiment_dir: ${base_dir}/${project_name}/${experiment_name}-${timestamp}
+
+algo:
+  config:
+    num_learning_iterations: 50
+    validate_numerics: true
+
+manager_env:
+  config:
+    record_physics_properties: true
+
+callbacks:
+  wandb: null
+  model_save:
+    save_frequency: 1000000
+    save_last_frequency: 50
+    max_disk_usage: null
+  training_validation:
+    _target_: gear_sonic_newton.utils.training_validation.TrainingValidationCallback
+    output_dir: ${experiment_dir}

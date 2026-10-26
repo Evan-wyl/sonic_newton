@@ -1,0 +1,62 @@
+# Universal token observations with SOMA skeleton encoder
+
+defaults:
+  - /manager_env/observations/terms/encoder_index@_here_
+  - /manager_env/observations/terms/command_multi_future_nonflat@_here_
+  - /manager_env/observations/terms/command_z_multi_future_nonflat@_here_
+  - /manager_env/observations/terms/motion_anchor_ori_b_mf_nonflat@_here_
+  # teleop
+  - /manager_env/observations/terms/command_multi_future_lower_body@_here_
+  - /manager_env/observations/terms/vr_3point_local_target@_here_
+  - /manager_env/observations/terms/vr_3point_local_orn_target@_here_
+  - /manager_env/observations/terms/motion_anchor_ori_b@_here_
+  - /manager_env/observations/terms/command_z@_here_
+  # smpl
+  - /manager_env/observations/terms/smpl_joints_multi_future_local_nonflat@_here_
+  - /manager_env/observations/terms/smpl_root_ori_b_multi_future@_here_
+  - /manager_env/observations/terms/joint_pos_multi_future_wrist_for_smpl@_here_
+  # soma
+  - /manager_env/observations/terms/soma_joints_multi_future_local_nonflat@_here_
+  - /manager_env/observations/terms/soma_root_ori_b_multi_future@_here_
+  - /manager_env/observations/terms/joint_pos_multi_future_wrist_for_soma@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.observations.TokenizerCfg
+enable_corruption: true
+concatenate_terms: false
+
+# define noise for certain terms
+motion_anchor_ori_b_mf_nonflat:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05
+
+motion_anchor_ori_b:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05
+
+smpl_joints_multi_future_local_nonflat:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05
+
+smpl_root_ori_b_multi_future:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05
+
+soma_joints_multi_future_local_nonflat:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05
+
+soma_root_ori_b_multi_future:
+  noise:
+    _target_: isaaclab.utils.noise.UniformNoiseCfg
+    n_min: -0.05
+    n_max: 0.05

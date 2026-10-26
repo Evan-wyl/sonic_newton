@@ -1,0 +1,7 @@
+# @package manager_env.commands
+# Standard command composition
+
+defaults:
+  - /manager_env/commands/terms/motion@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.commands.CommandsCfg

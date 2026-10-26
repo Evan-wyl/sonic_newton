@@ -1,0 +1,10 @@
+# @package manager_env.terminations
+# Standard termination composition
+
+defaults:
+  - /manager_env/terminations/terms/anchor_pos@_here_
+  - /manager_env/terminations/terms/anchor_ori_full@_here_
+  - /manager_env/terminations/terms/ee_body_pos@_here_
+  - /manager_env/terminations/terms/motion_time_out@_here_
+
+_target_: gear_sonic_newton.envs.manager_env.mdp.terminations.TerminationsCfg
