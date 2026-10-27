@@ -212,6 +212,12 @@ sonic_release/
 # Training output logs
 logs_rl/
 logs_eval/
+logs_rl_newton/
+logs_eval_newton/
+outputs_newton/
+
+# Independent Newton package: retain its copied source and resource tree.
+!gear_sonic_newton/data/
 
 # Model checkpoints directory
 models/
@@ -219,5 +225,6 @@ models/
 # Downloaded from HuggingFace (hf download)
 sample_data/
 sonic_release/
-motionbricks/out/
-motionbricks/out/
+
+__pycache__/
+*.py[cod]
