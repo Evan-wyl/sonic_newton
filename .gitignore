@@ -228,4 +228,3 @@ sonic_release/
 
 __pycache__/
 *.py[cod]
-motionbricks/out/
