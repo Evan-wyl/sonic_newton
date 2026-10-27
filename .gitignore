@@ -228,3 +228,4 @@ sonic_release/
 
 __pycache__/
 *.py[cod]
+wandb/
