@@ -974,7 +974,7 @@ class ModularTrackingEnvCfg(ManagerBasedRLEnvCfg):
         self.sim.dt = config.get("sim_dt", 0.005)
         self.sim.render_interval = self.decimation
         self.sim.physics_material = self.scene.terrain.physics_material
-        self.sim.physics = make_newton_physics(njmax=config.get("mjwarp_njmax", 512))
+        self.sim.physics = make_newton_physics(njmax=config.get("mjwarp_njmax", 1024))
 
         # Viewer settings
         viewer_config = config.get("viewer", {})
@@ -1033,3 +1033,8 @@ class ModularTrackingEnvCfg(ManagerBasedRLEnvCfg):
             self.curriculum.force_push_linear_curriculum.params["modify_fn"] = getattr(
                 module, "linear_curriculum"
             )
+
+        if config.get("use_warp_env", False):
+            from gear_sonic.envs.manager_env.mdp_warp.env_profile import apply_warp_env_profile
+
+            apply_warp_env_profile(self, config.get("manager_call_config", None))

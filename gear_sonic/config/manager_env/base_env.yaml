@@ -30,8 +30,10 @@ config:
   decimation: 4
   episode_length_s: 10.0
   sim_dt: 0.005
-  # Per-world constraint row capacity; observed nefc peaks exceeded 300.
-  mjwarp_njmax: 512
+  use_warp_env: false
+  manager_call_config: {default: 1} # 1: eager Warp managers; 2: capture where supported.
+  # Per-world constraint row capacity; 512 overflowed above 532 rows in large runs.
+  mjwarp_njmax: 1024
   viewer_eye: [4.5, 0.0, 6.0]
   viewer_lookat: [0.0, 0.0, 2.0]
   render_results: false

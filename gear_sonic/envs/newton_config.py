@@ -15,7 +15,7 @@ from isaaclab_newton.physics import (
 from isaaclab_newton.sim.schemas import NewtonArticulationCfg
 
 
-def make_newton_physics(*, njmax=512):
+def make_newton_physics(*, njmax=1024):
     """Use the selected Lab release's locomotion solver/contact configuration."""
     return NewtonCfg(
         solver_cfg=MJWarpSolverCfg(
@@ -24,10 +24,12 @@ def make_newton_physics(*, njmax=512):
             cone="pyramidal",
             impratio=1.0,
             integrator="implicitfast",
+            ls_parallel=True,
+            ls_iterations=30,
             use_mujoco_contacts=False,
         ),
         collision_cfg=NewtonCollisionPipelineCfg(max_triangle_pairs=2_500_000),
-        num_substeps=2,
+        num_substeps=1,
         debug_mode=False,
         default_shape_cfg=NewtonShapeCfg(margin=0.0, ke=160000.0, kd=1100.0),
     )

@@ -363,6 +363,24 @@ class ManagerEnvWrapper:
     def reset_all(self, global_rank=0):  # noqa: ARG002
         return self.reset()
 
+    def _restore_warp_term_shapes(self, group_name, group_obs):
+        """Restore tokenizer term dimensions flattened by Warp managers."""
+        if not isinstance(group_obs, dict):
+            return group_obs
+        manager = self.env.observation_manager
+        names = getattr(manager, "_group_obs_term_names", {}).get(group_name)
+        cfgs = getattr(manager, "_group_obs_term_cfgs", {}).get(group_name)
+        if not names or not cfgs:
+            return group_obs
+        env_key = id(self.env)
+        for name, cfg in zip(names, cfgs):
+            shapes = getattr(cfg.func, "_torch_src_shapes", None)
+            shape = shapes.get(env_key) if shapes else None
+            value = group_obs.get(name)
+            if shape and value is not None and value.ndim == 2 and value.shape[1] == int(np.prod(shape)):
+                group_obs[name] = value.view(value.shape[0], *shape)
+        return group_obs
+
     def process_raw_obs(self, obs, flatten_dict_obs):
         new_obs = {
             "actor_obs": obs["policy"],
@@ -380,12 +398,15 @@ class ManagerEnvWrapper:
                         # Keep original shape [B, H, W, C] for vision encoder
                         new_obs[k] = v["camera_rgb"]
                         continue
+                    v = self._restore_warp_term_shapes(k, v)
                     obs_names = self.env.observation_manager._group_obs_term_names[k]  # noqa: SLF001
                     new_obs[k] = torch.cat(
                         [v[obs_name].reshape(v[obs_name].shape[0], -1) for obs_name in obs_names],
                         dim=-1,
                     )
                 else:
+                    if isinstance(v, dict):
+                        v = self._restore_warp_term_shapes(k, v)
                     new_obs[k] = v
         return new_obs
 

@@ -93,7 +93,7 @@ def resume_checkpoint(config):
     config.checkpoint = config.checkpoint
 
 
-def create_manager_env(config, device, args_cli):
+def create_manager_env(config, device, args_cli, *, warp_env_class=None):
 
     # import wandb
 
@@ -102,6 +102,14 @@ def create_manager_env(config, device, args_cli):
     )
 
     from gear_sonic.envs.wrapper.manager_env_wrapper import ManagerEnvWrapper
+
+    use_warp_env = bool(config.manager_env.config.get("use_warp_env", False))
+    if use_warp_env:
+        from isaaclab_experimental.envs import ManagerBasedRLEnvWarp
+
+        env_class = warp_env_class or ManagerBasedRLEnvWarp
+    else:
+        env_class = ManagerBasedRLEnv
 
     from gear_sonic.utils.config_utils import resolve_motion_paths
     env_instance_cfg = custom_instantiate(resolve_motion_paths(config.manager_env))
@@ -149,7 +157,7 @@ def create_manager_env(config, device, args_cli):
     runtime = ExitStack()
     try:
         runtime.enter_context(launch_simulation(env_instance_cfg, args_cli))
-        env = ManagerBasedRLEnv(cfg=env_instance_cfg, render_mode=None)
+        env = env_class(cfg=env_instance_cfg, render_mode=None)
         env = ManagerEnvWrapper(env, env_instance_cfg.config, simulation_runtime=runtime)
     except BaseException:
         runtime.close()

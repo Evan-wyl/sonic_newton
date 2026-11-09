@@ -107,6 +107,13 @@ def main():
     parser.add_argument("--encoder", choices=["g1", "teleop", "smpl"], default="g1")
     parser.add_argument("--num-envs", type=int, default=2)
     parser.add_argument("--steps", type=int, default=100)
+    parser.add_argument("--use-warp-env", action="store_true", help="Exercise the experimental Warp task managers.")
+    parser.add_argument("--warp-manager-mode", type=int, choices=(1, 2), default=1,
+                        help="Warp manager execution mode: 1=eager, 2=request CUDA Graph capture.")
+    parser.add_argument("--disable-observation-corruption", action="store_true",
+                        help="Disable observation noise for deterministic Torch/Warp comparisons.")
+    parser.add_argument("--save-policy-trace", action="store_true",
+                        help="Save the first policy observations and actions for path comparison.")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--output-dir", default="logs_rl_newton/tracking_validation")
     args = parser.parse_args()
@@ -152,6 +159,13 @@ def main():
         for key in ("enable_cameras", "render_results", "render_ego", "overview_camera"):
             config.manager_env.config[key] = False
     config.manager_env.config.num_envs = args.num_envs
+    if args.disable_observation_corruption:
+        for group in config.manager_env.observations.values():
+            if hasattr(group, "get"):
+                group.enable_corruption = False
+    config.manager_env.config.use_warp_env = args.use_warp_env
+    if args.use_warp_env:
+        config.manager_env.config.manager_call_config = {"default": args.warp_manager_mode}
     config.sim_type = "newton_mjwarp"
     config.multi_gpu = False
     config.use_wandb = False
@@ -186,6 +200,9 @@ def main():
         "synthetic_reference": args.synthetic_reference, "checkpoint_loaded": False,
         "action_source": "zero_normalized_joint_actions", "training_updates": 0,
         "disabled_events": disabled_events, "num_envs": args.num_envs,
+        "use_warp_env": args.use_warp_env,
+        "warp_manager_mode": args.warp_manager_mode if args.use_warp_env else None,
+        "observation_corruption_disabled": args.disable_observation_corruption,
         "requested_control_steps": args.steps,
         "encoder": args.encoder,
         "motion_keys_requested": args.motion_key,
@@ -196,7 +213,14 @@ def main():
     }
     env = None
     try:
-        env = create_manager_env(config, args.device, newton_launcher_args(config, args.device))
+        warp_env_class = None
+        if args.use_warp_env:
+            from gear_sonic.envs.manager_env.mdp_warp.env import SonicManagerBasedRLEnvWarp
+
+            warp_env_class = SonicManagerBasedRLEnvWarp
+        env = create_manager_env(
+            config, args.device, newton_launcher_args(config, args.device), warp_env_class=warp_env_class
+        )
         obs = env.reset()
         assert_finite(obs, "initial_observation")
         result["observation_shapes"] = {key: list(value.shape) for key, value in obs.items()}
@@ -214,23 +238,26 @@ def main():
         result["joint_names"] = robot.joint_names
         from gear_sonic.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
         assert robot.joint_names == G1_ISAACLab_ORDER
-        action_term = env.env.action_manager.get_term("joint_pos")
-        probe = torch.zeros((args.num_envs, robot.num_joints), device=args.device)
-        probe[0, 0] = 0.25
-        probe[-1, -1] = -0.25
-        scale_cfg = env.env.cfg.actions.joint_pos.scale
-        import re
-        scales = torch.zeros(robot.num_joints, device=args.device)
-        for pattern, value in scale_cfg.items():
-            for index, name in enumerate(robot.joint_names):
-                if re.fullmatch(pattern, name):
-                    scales[index] = value
-        assert (scales > 0).all(), "Missing positive action scale"
-        action_term.process_actions(probe)
-        expected = asset_tensor(robot, "default_joint_pos") + probe * scales
-        torch.testing.assert_close(action_term.processed_actions, expected)
-        result["action_scale_contract_checked"] = True
-        result["action_scale_by_joint"] = scales.tolist()
+        if not args.use_warp_env:
+            action_term = env.env.action_manager.get_term("joint_pos")
+            probe = torch.zeros((args.num_envs, robot.num_joints), device=args.device)
+            probe[0, 0] = 0.25
+            probe[-1, -1] = -0.25
+            scale_cfg = env.env.cfg.actions.joint_pos.scale
+            import re
+            scales = torch.zeros(robot.num_joints, device=args.device)
+            for pattern, value in scale_cfg.items():
+                for index, name in enumerate(robot.joint_names):
+                    if re.fullmatch(pattern, name):
+                        scales[index] = value
+            assert (scales > 0).all(), "Missing positive action scale"
+            action_term.process_actions(probe)
+            expected = asset_tensor(robot, "default_joint_pos") + probe * scales
+            torch.testing.assert_close(action_term.processed_actions, expected)
+            result["action_scale_contract_checked"] = True
+            result["action_scale_by_joint"] = scales.tolist()
+        else:
+            result["action_scale_contract_checked"] = False
         result["default_joint_position_rad"] = asset_tensor(robot, "default_joint_pos")[0].tolist()
         policy = build_policy(config, env, args.checkpoint) if args.checkpoint or args.untrained_policy else None
         result["checkpoint_loaded"] = bool(args.checkpoint)
@@ -239,6 +266,7 @@ def main():
             result["policy_parameters"] = sum(parameter.numel() for parameter in policy.parameters())
         command.is_evaluating = True
         obs = env.reset()
+        trace = []
         reset_count = 0
         rewards = []
         errors = []
@@ -249,6 +277,10 @@ def main():
                     (args.num_envs, env.env.action_manager.total_action_dim), device=args.device
                 )
             assert_finite(actions, "actions")
+            if args.save_policy_trace and step < 3:
+                trace.append({"step": step, "actor_obs": obs["actor_obs"].detach().cpu(),
+                              "tokenizer": obs["tokenizer"].detach().cpu(),
+                              "actions": actions.detach().cpu()})
             obs, reward, dones, extras = env.step({"actions": actions})
             assert_finite(obs, "observation")
             assert_finite(reward, "reward")
@@ -279,6 +311,8 @@ def main():
             "max_contact_force_n": max(max(s["max_contact_force_n"]) for s in samples),
         })
         (output / "metrics.json").write_text(json.dumps(samples) + "\n")
+        if args.save_policy_trace:
+            torch.save(trace, output / "policy_trace.pt")
     except Exception as exc:
         result["error"] = f"{type(exc).__name__}: {exc}"
         raise
