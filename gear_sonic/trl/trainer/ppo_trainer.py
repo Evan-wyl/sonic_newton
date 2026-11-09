@@ -1880,7 +1880,6 @@ class TRLPPOTrainer(PPOTrainer):  # noqa: F405
                     device=device, dtype=torch.float64,
                 )
                 totals = accelerator.gather_for_metrics(totals[None]).sum(dim=0)
-                metrics["objective/buffer_episodes"] = totals[2].item()
                 if totals[2] > 0:
                     metrics["objective/rewards"] = (totals[0] / totals[2]).item()
                     metrics["objective/length"] = (totals[1] / totals[2]).item()

@@ -469,8 +469,8 @@ def quat_mul(a, b, w_last: bool):
 def quat_mul_norm(x, y, w_last):
     # type: (Tensor, Tensor, bool) -> Tensor
     """
-    Combine two set of 3D rotations together using \**\* operator. The shape needs to be
-    broadcastable
+    Combine two sets of 3D rotations and normalize the result. The shapes must be
+    broadcastable.
     """
     return quat_unit(quat_mul(x, y, w_last))
 
