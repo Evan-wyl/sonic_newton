@@ -134,6 +134,31 @@ class TestLab3Boundary(unittest.TestCase):
                 self.assertIn("_target_", cfg.manager_env.terminations)
                 self.assertIn("g1_recon", cfg.algo.config.actor.backbone.aux_loss_func)
 
+    def test_v1_1_policy_input_contract(self):
+        from hydra import compose, initialize_config_dir
+        from gear_sonic.utils.config_utils import register_rl_resolvers
+        from gear_sonic.utils.v1_1_contract import assert_v1_1_contract
+
+        register_rl_resolvers()
+        config_dir = str(Path(__file__).resolve().parents[1] / "config")
+        with initialize_config_dir(config_dir=config_dir, version_base=None):
+            cfg = compose(config_name="base", overrides=[
+                "+exp=manager/universal_token/all_modes/sonic_v1_1",
+            ])
+        assert_v1_1_contract(cfg)
+        self.assertEqual(cfg.manager_env.commands.motion.motion_lib_cfg.smpl_motion_file,
+                         "data/smpl_filtered")
+
+        wrong_inputs = cfg.copy()
+        wrong_inputs.algo.config.actor.backbone.encoders.g1.inputs[1] = "motion_anchor_ori_b_mf_nonflat"
+        with self.assertRaisesRegex(ValueError, "g1 encoder inputs"):
+            assert_v1_1_contract(wrong_inputs)
+
+        no_augmentation = cfg.copy()
+        no_augmentation.manager_env.commands.motion.randomize_wrist_poses = False
+        with self.assertRaisesRegex(ValueError, "wrist-pose augmentation"):
+            assert_v1_1_contract(no_augmentation)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -24,6 +24,7 @@ from gear_sonic.utils.lab_api import asset_tensor
 from gear_sonic.trl.utils.common import custom_instantiate
 from gear_sonic.utils.obs_utils import get_group_term_obs_shape
 from gear_sonic.utils.checkpoint_io import load_checkpoint, load_policy_weights
+from gear_sonic.utils.v1_1_contract import assert_v1_1_contract
 
 
 def build_policy(config, env, checkpoint=None):
@@ -104,12 +105,16 @@ def main():
     policy_options.add_argument("--checkpoint", help="Old policy weights; requires its saved config.")
     policy_options.add_argument("--untrained-policy", action="store_true", help="Diagnostic forward pass, no learned weights.")
     parser.add_argument("--checkpoint-config", help="Defaults to config.yaml beside the checkpoint.")
+    parser.add_argument("--experiment", choices=("sonic_release", "sonic_v1_1"), default="sonic_release",
+                        help="Experiment configuration to validate; a checkpoint's saved config takes precedence.")
     parser.add_argument("--encoder", choices=["g1", "teleop", "smpl"], default="g1")
     parser.add_argument("--num-envs", type=int, default=2)
     parser.add_argument("--steps", type=int, default=100)
     parser.add_argument("--use-warp-env", action="store_true", help="Exercise the experimental Warp task managers.")
     parser.add_argument("--warp-manager-mode", type=int, choices=(1, 2), default=1,
                         help="Warp manager execution mode: 1=eager, 2=request CUDA Graph capture.")
+    parser.add_argument("--validate-com-randomization", action="store_true",
+                        help="Enable only the startup base_com event and verify its sampled offsets persist.")
     parser.add_argument("--disable-observation-corruption", action="store_true",
                         help="Disable observation noise for deterministic Torch/Warp comparisons.")
     parser.add_argument("--save-policy-trace", action="store_true",
@@ -119,14 +124,18 @@ def main():
     args = parser.parse_args()
     if bool(args.motion_file) == args.synthetic_reference:
         parser.error("Choose --motion-file or --synthetic-reference explicitly.")
+    if args.encoder == "smpl" and args.synthetic_reference:
+        parser.error("SMPL policy validation requires a real motion and matching --smpl-motion-file; synthetic SMPL data has no matching samples.")
     if args.num_envs < 2 or args.steps < 2:
         parser.error("Use at least two environments and steps.")
+    if args.validate_com_randomization and not args.use_warp_env:
+        parser.error("--validate-com-randomization requires --use-warp-env.")
     output = Path(args.output_dir).resolve()
     output.mkdir(parents=True, exist_ok=True)
     register_rl_resolvers()
     with initialize_config_dir(config_dir=str(Path(__file__).resolve().parents[1] / "config"), version_base=None):
         config = compose(config_name="base", overrides=[
-            "+exp=manager/universal_token/all_modes/sonic_release",
+            f"+exp=manager/universal_token/all_modes/{args.experiment}",
             f"num_envs={args.num_envs}", "headless=True",
             "manager_env.config.terrain_type=plane", f"experiment_dir={output}",
         ])
@@ -158,6 +167,8 @@ def main():
         config.manager_env.config.terrain_type = "plane"
         for key in ("enable_cameras", "render_results", "render_ego", "overview_camera"):
             config.manager_env.config[key] = False
+    if args.experiment == "sonic_v1_1":
+        assert_v1_1_contract(config)
     config.manager_env.config.num_envs = args.num_envs
     if args.disable_observation_corruption:
         for group in config.manager_env.observations.values():
@@ -187,8 +198,13 @@ def main():
     config.manager_env.commands.motion.encoder_sample_probs = {
         key: float(key == args.encoder) for key in ("g1", "teleop", "smpl")
     }
-    # Stage 6 will validate randomization. Record the exclusions in the report.
-    disabled_events = [key for key in config.manager_env.events if not key.startswith("_")]
+    # Keep all unrelated randomization off so the CoM event can be checked in isolation.
+    if args.validate_com_randomization:
+        config.manager_env.config.enable_com_randomization = True
+        if config.manager_env.events.get("base_com") is None:
+            raise ValueError("The selected configuration has no base_com event to validate.")
+    disabled_events = [key for key in config.manager_env.events
+                       if not key.startswith("_") and not (args.validate_com_randomization and key == "base_com")]
     for key in disabled_events:
         config.manager_env.events[key] = None
     config.manager_env.recorders = {
@@ -205,6 +221,8 @@ def main():
         "observation_corruption_disabled": args.disable_observation_corruption,
         "requested_control_steps": args.steps,
         "encoder": args.encoder,
+        "experiment": args.experiment,
+        "v1_1_contract_checked": args.experiment == "sonic_v1_1",
         "motion_keys_requested": args.motion_key,
         "metric_sampling": "post_physics_before_autoreset",
         "checkpoint": str(Path(args.checkpoint).absolute()) if args.checkpoint else None,
@@ -235,6 +253,27 @@ def main():
         result["solver_cfg_type"] = type(env.env.cfg.sim.physics.solver_cfg).__name__
         result["articulation_type"] = f"{type(env.env.scene['robot']).__module__}.{type(env.env.scene['robot']).__name__}"
         robot = env.env.scene["robot"]
+        if args.validate_com_randomization:
+            nominal_com = robot._sonic_nominal_body_com
+            initial_com = asset_tensor(robot, "body_com_pos_b").clone()
+            com_delta = initial_com - nominal_com
+            body_id = robot.body_names.index("torso_link")
+            ranges = config.manager_env.events.base_com.params.com_range
+            tolerance = 1e-6
+            for axis, name in enumerate(("x", "y", "z")):
+                low, high = ranges[name]
+                offsets = com_delta[:, body_id, axis]
+                assert torch.all(offsets >= low - tolerance) and torch.all(offsets <= high + tolerance), name
+            other_bodies = com_delta.clone()
+            other_bodies[:, body_id] = 0
+            torch.testing.assert_close(other_bodies, torch.zeros_like(other_bodies), atol=tolerance, rtol=0)
+            assert torch.any(com_delta[:, body_id].abs() > tolerance), "CoM event did not change torso_link"
+            result["com_randomization"] = {
+                "body": "torso_link",
+                "sampled_offset_min_m": com_delta[:, body_id].amin(dim=0).tolist(),
+                "sampled_offset_max_m": com_delta[:, body_id].amax(dim=0).tolist(),
+                "other_bodies_unchanged": True,
+            }
         result["joint_names"] = robot.joint_names
         from gear_sonic.envs.env_utils.joint_utils import G1_ISAACLab_ORDER
         assert robot.joint_names == G1_ISAACLab_ORDER
@@ -266,6 +305,8 @@ def main():
             result["policy_parameters"] = sum(parameter.numel() for parameter in policy.parameters())
         command.is_evaluating = True
         obs = env.reset()
+        if args.validate_com_randomization:
+            torch.testing.assert_close(asset_tensor(robot, "body_com_pos_b"), initial_com)
         trace = []
         reset_count = 0
         rewards = []
@@ -289,6 +330,9 @@ def main():
             reset_count += dones.count_nonzero().item()
             errors.extend(env.env.tracking_eval_samples[-1]["body_position_error_m"])
         samples = env.env.tracking_eval_samples
+        if args.validate_com_randomization:
+            torch.testing.assert_close(asset_tensor(robot, "body_com_pos_b"), initial_com)
+            result["com_randomization"]["unchanged_after_resets_and_steps"] = True
         failures = sum(sum(sample["terminated"]) for sample in samples)
         timeouts = sum(sum(sample["time_out"]) for sample in samples)
         ended = sum(sum(a or b for a, b in zip(sample["terminated"], sample["time_out"])) for sample in samples)
