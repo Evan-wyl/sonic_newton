@@ -142,6 +142,41 @@ def _anchor_ori_b_repeat_kernel(
 
 
 @wp.kernel
+def _anchor_ori_heading_kernel(
+    r_quat: wp.array(dtype=wp.float32, ndim=2),
+    m_quat: wp.array(dtype=wp.float32, ndim=2),
+    out: wp.array(dtype=wp.float32, ndim=2),
+):
+    # Match torch_transform.get_heading_q: keep only the robot's Z twist,
+    # rather than extracting yaw from its projected forward direction.
+    i = wp.tid()
+    z = r_quat[i, 2]
+    w = r_quat[i, 3]
+    norm = wp.max(wp.sqrt(z * z + w * w), 1.0e-9)
+    heading_inv = wp.vec4f(0.0, 0.0, -z / norm, w / norm)
+    ref_quat = wp.vec4f(m_quat[i, 0], m_quat[i, 1], m_quat[i, 2], m_quat[i, 3])
+    q = quat_mul_xyzw(heading_inv, ref_quat)
+    xx = q[0] * q[0]
+    yy = q[1] * q[1]
+    zz = q[2] * q[2]
+    xy = q[0] * q[1]
+    xz = q[0] * q[2]
+    yz = q[1] * q[2]
+    wz = q[3] * q[2]
+    wy = q[3] * q[1]
+    wx = q[3] * q[0]
+    for f in range(out.shape[1] // 6):
+        base = f * 6
+        # matrix_from_quat(q)[..., :2].reshape(N, -1): row-interleaved columns.
+        out[i, base + 0] = 1.0 - 2.0 * (yy + zz)
+        out[i, base + 1] = 2.0 * (xy - wz)
+        out[i, base + 2] = 2.0 * (xy + wz)
+        out[i, base + 3] = 1.0 - 2.0 * (xx + zz)
+        out[i, base + 4] = 2.0 * (xz - wy)
+        out[i, base + 5] = 2.0 * (yz + wx)
+
+
+@wp.kernel
 def _robot_body_pos_b_kernel(
     r_anchor_pos: wp.array(dtype=wp.float32, ndim=2),
     r_anchor_quat: wp.array(dtype=wp.float32, ndim=2),
@@ -551,6 +586,34 @@ def make_motion_anchor_ori_b(term_params: dict | None = None, noise: Any = None)
         resolver,
         ("command_name", "non_flatten"),
         "motion_anchor_ori_b(warp)",
+        __doc__,
+        term_params,
+        noise=noise,
+    )
+
+
+def make_motion_anchor_ori_heading(term_params: dict | None = None, noise: Any = None) -> Callable:
+    """``motion_anchor_ori_heading``: reference orientation relative to robot Z twist."""
+
+    def runner(env, out, command, params):
+        wp.launch(
+            kernel=_anchor_ori_heading_kernel,
+            dim=env.num_envs,
+            inputs=[command.wp_robot_anchor_quat_w, command.wp_anchor_quat_w, out],
+            device=env.device,
+        )
+
+    def resolver(command, params):
+        if params.get("non_flatten", False):
+            frames = int(command.num_future_frames)
+            return 6 * frames, (frames, 6)
+        return 6, (6,)
+
+    return _make_obs_term(
+        runner,
+        resolver,
+        ("command_name", "non_flatten"),
+        "motion_anchor_ori_heading(warp)",
         __doc__,
         term_params,
         noise=noise,

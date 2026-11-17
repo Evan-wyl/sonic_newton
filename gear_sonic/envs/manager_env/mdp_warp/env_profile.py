@@ -109,6 +109,8 @@ _REWARD_WARP_PORTS = {
     _sonic_mdp.tracking_body_linvel_error: _warp_tracking_rewards.tracking_body_linvel_error,
     _sonic_mdp.tracking_body_angvel_error: _warp_tracking_rewards.tracking_body_angvel_error,
     _sonic_mdp.tracking_local_vr_5point_error: _warp_tracking_rewards.tracking_local_vr_5point_error,
+    _sonic_mdp.tracking_local_vr_2wrists_ori_error: _warp_tracking_rewards.tracking_local_vr_2wrists_ori_error,
+    _sonic_mdp.energy_consumption: _warp_tracking_rewards.energy_consumption,
     _sonic_mdp.anti_shake_ang_vel_l2: _warp_tracking_rewards.anti_shake_ang_vel_l2,
 }
 
@@ -147,6 +149,7 @@ _OBS_WARP_PORTS = {
     _sonic_mdp.gravity_dir: _kernel_obs_port("make_gravity_dir"),
     _sonic_mdp.motion_anchor_pos_b: _kernel_obs_port("make_motion_anchor_pos_b"),
     _sonic_mdp.motion_anchor_ori_b: _kernel_obs_port("make_motion_anchor_ori_b"),
+    _sonic_mdp.motion_anchor_ori_heading: _kernel_obs_port("make_motion_anchor_ori_heading"),
     _sonic_mdp.robot_body_pos_b: _kernel_obs_port("make_robot_body_pos_b"),
     _sonic_mdp.robot_body_ori_b: _kernel_obs_port("make_robot_body_ori_b"),
     _sonic_mdp.vr_3point_local_target: _kernel_obs_port("make_vr_3point_local_target"),
@@ -166,8 +169,14 @@ _OBS_WARP_PORTS = {
     _sonic_mdp.motion_anchor_ori_b_mf: lambda p, n: make_command_copy_obs(
         "_copy_root_rot_dif_l_multi_future", term_params=p, noise=n
     ),
+    _sonic_mdp.motion_anchor_ori_heading_mf: lambda p, n: make_command_copy_obs(
+        "_copy_root_rot_dif_heading_multi_future", term_params=p, noise=n
+    ),
     _sonic_mdp.smpl_root_ori_b_mf: lambda p, n: make_command_copy_obs(
         "_copy_smpl_root_quat_w_dif_l_multi_future", term_params=p, noise=n
+    ),
+    _sonic_mdp.smpl_root_ori_heading_mf: lambda p, n: make_command_copy_obs(
+        "_copy_smpl_root_quat_w_dif_heading_multi_future", term_params=p, noise=n
     ),
     _sonic_mdp.smpl_joints_multi_future_local: lambda p, n: make_command_copy_obs(
         "_copy_smpl_joints_multi_future_local", term_params=p, noise=n

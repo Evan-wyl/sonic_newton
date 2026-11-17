@@ -629,11 +629,16 @@ class TrackingCommandWarp(TrackingCommand):
                 ("copy_command_z_multi_future", self.command_z_multi_future),
                 ("copy_command_multi_future", self.command_multi_future),
                 ("copy_root_rot_dif_l_multi_future", self.root_rot_dif_l_multi_future),
+                ("copy_root_rot_dif_heading_multi_future", self.root_rot_dif_heading_multi_future),
                 ("copy_command_multi_future_lower_body", self.command_multi_future_lower_body),
                 ("copy_joint_pos_multi_future_for_smpl", self.joint_pos_multi_future_for_smpl),
                 (
                     "copy_smpl_root_quat_w_dif_l_multi_future",
                     self.smpl_root_quat_w_dif_l_multi_future,
+                ),
+                (
+                    "copy_smpl_root_quat_w_dif_heading_multi_future",
+                    self.smpl_root_quat_w_dif_heading_multi_future,
                 ),
             ):
                 flat = value.reshape(num_envs, -1).to(torch.float32)
@@ -663,9 +668,11 @@ class TrackingCommandWarp(TrackingCommand):
             "copy_command_z_multi_future": nf,
             "copy_command_multi_future": nf,
             "copy_root_rot_dif_l_multi_future": nf,
+            "copy_root_rot_dif_heading_multi_future": nf,
             "copy_command_multi_future_lower_body": nf,
             "copy_joint_pos_multi_future_for_smpl": sf,
             "copy_smpl_root_quat_w_dif_l_multi_future": sf,
+            "copy_smpl_root_quat_w_dif_heading_multi_future": sf,
             "copy_smpl_joints_multi_future_local": sf,
         }
 
@@ -1004,6 +1011,9 @@ class TrackingCommandWarp(TrackingCommand):
             self._copy_root_rot_dif_l_multi_future.copy_(
                 self.root_rot_dif_l_multi_future.reshape(N, -1)
             )
+            self._copy_root_rot_dif_heading_multi_future.copy_(
+                self.root_rot_dif_heading_multi_future.reshape(N, -1)
+            )
             self._copy_command_multi_future_lower_body.copy_(
                 self.command_multi_future_lower_body.reshape(N, -1)
             )
@@ -1012,6 +1022,9 @@ class TrackingCommandWarp(TrackingCommand):
             )
             self._copy_smpl_root_quat_w_dif_l_multi_future.copy_(
                 self.smpl_root_quat_w_dif_l_multi_future.reshape(N, -1)
+            )
+            self._copy_smpl_root_quat_w_dif_heading_multi_future.copy_(
+                self.smpl_root_quat_w_dif_heading_multi_future.reshape(N, -1)
             )
             ref_joints = self.smpl_joints_multi_future
             ref_roots = self.smpl_root_quat_w_multi_future.unsqueeze(-2).repeat(

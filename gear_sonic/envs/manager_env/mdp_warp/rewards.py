@@ -19,8 +19,16 @@ from typing import TYPE_CHECKING
 
 import warp as wp
 
-from .commands import TrackingCommandWarp
-from .warp_utils import quat_error_magnitude_xyzw, quat_rotate_inv_xyzw, quat_rotate_xyzw
+from gear_sonic.utils.lab_api import as_torch
+
+from .commands import TrackingCommandWarp, _gather_contig2d
+from .warp_utils import (
+    quat_conj_xyzw,
+    quat_error_magnitude_xyzw,
+    quat_mul_xyzw,
+    quat_rotate_inv_xyzw,
+    quat_rotate_xyzw,
+)
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
@@ -115,6 +123,68 @@ def _body_ori_error_kernel(
         error = quat_error_magnitude_xyzw(qm, qr)
         error_sum += error * error
     out[i] = wp.exp(-(error_sum / float(num_bodies)) / (std * std))
+
+
+@wp.kernel
+def _local_wrist_ori_error_kernel(
+    robot_body_quat: wp.array(dtype=wp.float32, ndim=3),
+    anchor_rcol: int,
+    ref_anchor_quat: wp.array(dtype=wp.float32, ndim=2),
+    ref_body_quat: wp.array(dtype=wp.float32, ndim=3),
+    sub: wp.array(dtype=wp.int32),
+    rcols: wp.array(dtype=wp.int32),
+    std: float,
+    out: wp.array(dtype=wp.float32),
+):
+    i = wp.tid()
+    ref_anchor = wp.vec4f(
+        ref_anchor_quat[i, 0],
+        ref_anchor_quat[i, 1],
+        ref_anchor_quat[i, 2],
+        ref_anchor_quat[i, 3],
+    )
+    robot_anchor = wp.vec4f(
+        robot_body_quat[i, anchor_rcol, 0],
+        robot_body_quat[i, anchor_rcol, 1],
+        robot_body_quat[i, anchor_rcol, 2],
+        robot_body_quat[i, anchor_rcol, 3],
+    )
+    ref_anchor_inv = quat_conj_xyzw(ref_anchor)
+    robot_anchor_inv = quat_conj_xyzw(robot_anchor)
+    error_sum = float(0.0)
+    for b in range(sub.shape[0]):
+        t = sub[b]
+        col = rcols[t]
+        ref_wrist = wp.vec4f(
+            ref_body_quat[i, t, 0],
+            ref_body_quat[i, t, 1],
+            ref_body_quat[i, t, 2],
+            ref_body_quat[i, t, 3],
+        )
+        robot_wrist = wp.vec4f(
+            robot_body_quat[i, col, 0],
+            robot_body_quat[i, col, 1],
+            robot_body_quat[i, col, 2],
+            robot_body_quat[i, col, 3],
+        )
+        ref_local = quat_mul_xyzw(ref_anchor_inv, ref_wrist)
+        robot_local = quat_mul_xyzw(robot_anchor_inv, robot_wrist)
+        error = quat_error_magnitude_xyzw(ref_local, robot_local)
+        error_sum += error * error
+    out[i] = wp.exp(-(error_sum / float(sub.shape[0])) / (std * std))
+
+
+@wp.kernel
+def _energy_consumption_kernel(
+    torque: wp.array(dtype=wp.float32, ndim=2),
+    joint_vel: wp.array(dtype=wp.float32, ndim=2),
+    out: wp.array(dtype=wp.float32),
+):
+    i = wp.tid()
+    total = float(0.0)
+    for j in range(torque.shape[1]):
+        total += wp.abs(torque[i, j] * joint_vel[i, j])
+    out[i] = total
 
 
 @wp.kernel
@@ -373,6 +443,76 @@ def tracking_local_vr_5point_error(
             float(std),
             out,
         ],
+        device=env.device,
+    )
+
+
+def tracking_local_vr_2wrists_ori_error(
+    env: ManagerBasedRLEnv, out, command_name: str, std: float, body_names: list[str] | None = None
+) -> None:
+    """Wrist orientation tracking in each side's anchor frame. Writes into ``out``."""
+    assert body_names is not None, "body_names must be provided"
+    command: TrackingCommandWarp = env.command_manager.get_term(command_name)
+    _, r_quat, _, _, _, _ = command._robot_wp_views()
+    sub, rcols = _subset_views(command, body_names)
+    wp.launch(
+        kernel=_local_wrist_ori_error_kernel,
+        dim=env.num_envs,
+        inputs=[
+            r_quat,
+            command._anchor_rcol,
+            command.wp_anchor_quat_w,
+            command.wp_body_quat_w,
+            sub,
+            rcols,
+            float(std),
+            out,
+        ],
+        device=env.device,
+    )
+
+
+def energy_consumption(env: ManagerBasedRLEnv, out, asset_cfg=None) -> None:
+    """Sum absolute applied torque times joint velocity. Writes into ``out``."""
+    robot_name = (
+        asset_cfg.get("name", "robot")
+        if isinstance(asset_cfg, dict)
+        else getattr(asset_cfg, "name", "robot")
+    )
+    robot = env.scene[robot_name]
+    cache = getattr(env, "_sonic_energy_warp_views", None)
+    if cache is None:
+        cache = {}
+        env._sonic_energy_warp_views = cache
+    views = cache.get(robot_name)
+    if views is None:
+        views = []
+        for field in ("applied_torque", "joint_vel"):
+            source = as_torch(getattr(robot.data, field))
+            if not hasattr(source, "data_ptr"):
+                source = wp.to_torch(source)
+            shape = tuple(source.shape)
+            shadow = wp.empty(shape, dtype=wp.float32, device=env.device)
+            source_wp = wp.array(
+                ptr=source.data_ptr(),
+                shape=shape,
+                strides=tuple(s * source.element_size() for s in source.stride()),
+                dtype=wp.float32,
+                device=env.device,
+            )
+            views.append((source, source_wp, shadow))
+        cache[robot_name] = views
+    for _source, source_wp, shadow in views:
+        wp.launch(
+            kernel=_gather_contig2d,
+            dim=shadow.shape,
+            inputs=[source_wp, shadow],
+            device=env.device,
+        )
+    wp.launch(
+        kernel=_energy_consumption_kernel,
+        dim=env.num_envs,
+        inputs=[views[0][2], views[1][2], out],
         device=env.device,
     )
 
